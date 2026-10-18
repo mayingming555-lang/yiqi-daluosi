@@ -237,6 +237,26 @@ background-image:linear-gradient(rgba(0,0,0,.025) 1px,transparent 1px);backgroun
 .slipboard{margin-top:8px;text-align:center;font-size:13.5px;font-weight:800;border-radius:10px;padding:7px;background:#eef4ff;color:#1f4fa0;border:1.5px dashed #3a86ff}
 .slipboard.ok{background:#e6fff5;color:#05744f;border-color:#06c08f}.slipboard.err{background:#fff0f3;color:#b8264b;border-color:#ef476f}
 .slip .mtotal{display:flex;justify-content:space-between;font-size:14px;font-weight:800;margin-top:4px;color:#555}
+
+/* 期权 / 上市 */
+.optbox{margin-top:8px;background:linear-gradient(135deg,#fff8e1,#ffe0a3);border:2px dashed #e0a400;border-radius:12px;padding:8px 10px;font-size:13px}
+.optbox b{color:#8a5a00}.optbox .big{font-family:"DejaVu Sans Mono",Menlo,monospace;font-weight:900;font-size:20px;color:#d6334f}
+.optbox .tag{display:inline-block;background:#ef476f;color:#fff;font-size:11px;padding:1px 6px;border-radius:6px;font-weight:900;margin-left:4px}
+.item.locked{opacity:.72;filter:grayscale(.35)}.item.locked .btn{filter:none}
+.item .lockhint{font-size:11.5px;color:#b8264b;font-weight:800;margin-top:2px}
+.optown{background:#2b2d42;color:#ffd966;border-radius:10px;padding:6px 10px;font-size:12.5px;margin:6px 0 10px;font-weight:700}
+#ipo{background:radial-gradient(circle at 50% 30%,#1a2744,#0b1020 70%);color:#fff;justify-content:flex-start;padding-top:max(20px,env(safe-area-inset-top));overflow:hidden}
+#ipo .stage{position:relative;width:min(440px,100%);text-align:center}
+#ipo h2{margin:4px 0 2px;font-size:clamp(22px,6vw,32px);letter-spacing:3px;color:#ffd966;text-shadow:0 0 18px rgba(255,200,60,.45)}
+#ipo .sub{font-size:13px;opacity:.85;margin-bottom:8px}
+#ipoCv{width:100%;height:min(42vh,280px);display:block;margin:0 auto;border-radius:16px;background:linear-gradient(180deg,#243556,#121a2c);box-shadow:0 12px 30px rgba(0,0,0,.45),inset 0 0 0 2px rgba(255,255,255,.08)}
+#ipoTicker{margin:10px 0;overflow:hidden;white-space:nowrap;background:rgba(0,0,0,.45);border-radius:8px;padding:6px 0;font-family:"DejaVu Sans Mono",Menlo,monospace;font-weight:800;font-size:14px;color:#7dffb2;border:1px solid rgba(125,255,178,.25)}
+#ipoTicker span{display:inline-block;padding-left:100%;animation:tick 12s linear infinite}
+@keyframes tick{to{transform:translateX(-100%)}}
+#ipoPunch{background:rgba(255,255,255,.08);border-radius:16px;padding:12px 14px;margin:8px 0;font-size:15px;line-height:1.65;border:1px solid rgba(255,255,255,.12)}
+#ipoPunch .cash{font-size:28px;font-weight:900;color:#ffcf3f;font-family:"DejaVu Sans Mono",Menlo,monospace}
+#ipoPunch .warn{color:#ff8fab;font-weight:800}
+
 </style>
 </head>
 <body>
@@ -373,6 +393,18 @@ background-image:linear-gradient(rgba(0,0,0,.025) 1px,transparent 1px);backgroun
  <div class="btnrow"><button class="btn small blue" id="boardRefresh">↻ 刷新</button><button class="btn small gray" id="boardClose">返回</button></div>
 </div></div>
 
+
+<div id="ipo" class="screen hidden">
+ <div class="stage">
+  <div class="sub">拧不完螺丝制品有限公司 · 港交所（PPT 分会场）</div>
+  <h2>🔔 上市敲钟仪式</h2>
+  <canvas id="ipoCv"></canvas>
+  <div id="ipoTicker"><span id="ipoTickText">LS.screw 开盘 —— </span></div>
+  <div id="ipoPunch"></div>
+  <div class="btnrow"><button class="btn" id="ipoBtn">……继续打螺丝</button></div>
+ </div>
+</div>
+
 <div id="toast"></div>
 <script>
 'use strict';
@@ -391,10 +423,10 @@ const TAU=Math.PI*2;
 const SAVE_KEY='dls_save', SET_KEY='dls_settings';
 function defMonth(){return{days:0,late:0,earned:0,screws:0,perfect:0,caught:0,stripped:0,missed:0,ot:0,parts:0,base:0,fish:0}}
 function defSave(){return{v:1,money:0,day:0,totalScrews:0,totalPerfect:0,totalParts:0,totalEarned:0,rank:0,
- up:{drill:0,magnet:0,auto:0,wrist:0,radar:0},tea:1,month:defMonth(),bestDay:0,endingSeen:false,history:[]}}
+ up:{drill:0,magnet:0,auto:0,wrist:0,radar:0},tea:1,opt:{shares:0,packs:{a:0,b:0,c:0},lastIpoDay:0,ipoCount:0,cash:0},month:defMonth(),bestDay:0,endingSeen:false,history:[]}}
 if(Q.has('reset')){try{localStorage.removeItem(SAVE_KEY)}catch(e){}}
 function loadSave(){try{const o=JSON.parse(localStorage.getItem(SAVE_KEY)||'null');if(o&&o.v===1){const d=defSave();
- return Object.assign(d,o,{up:Object.assign(d.up,o.up||{}),month:Object.assign(defMonth(),o.month||{})})}}catch(e){}return defSave()}
+ return Object.assign(d,o,{up:Object.assign(d.up,o.up||{}),opt:Object.assign(d.opt,o.opt||{},{packs:Object.assign(d.opt.packs,(o.opt&&o.opt.packs)||{})}),month:Object.assign(defMonth(),o.month||{})})}}catch(e){}return defSave()}
 let S=loadSave();
 function save(){try{localStorage.setItem(SAVE_KEY,JSON.stringify(S))}catch(e){}}
 let SET=(()=>{try{return Object.assign({mute:false},JSON.parse(localStorage.getItem(SET_KEY)||'{}'))}catch(e){return{mute:false}}})();
@@ -421,6 +453,24 @@ const SHOP=[
  {id:'radar',n:'老板雷达',max:1,price:[350],desc:['老板提前 5 秒预警，并在屏幕上标出位置（摸鱼刚需）']},
  {id:'tea',n:'奶茶',tea:true,price:18,desc:'上班时喝一杯：精力 +50，心情原地复活（全糖）'},
 ];
+/* 员工期权包：线长解锁；份额单位为公司股权百分比 */
+const OPT_UNLOCK_RANK=3; // 线长
+const OPT_PACKS=[
+ {id:'a',n:'员工期权包 · 种子档',shares:.01,price:160,tag:'0.01%',desc:'天使轮画饼入场券。纸面富贵从这里开始（不可提现）。'},
+ {id:'b',n:'员工期权包 · 成长档',shares:.05,price:520,tag:'0.05%',desc:'Pre-A 轮配股。老板说：格局打开就是财务自由。'},
+ {id:'c',n:'员工期权包 · 合伙人档',shares:.1,price:980,tag:'0.1%',desc:'战略配售（打工人版）。距离敲钟只差……很多班。'},
+];
+const OPT_VALS=[
+ {n:'天使轮估值',v:8.8e7,q:'估值会说话，提现请排队'},
+ {n:'对标特斯拉螺丝事业部',v:5.2e8,q:'对标一下不花钱'},
+ {n:'Pre-IPO · 路演 PPT 估值',v:1.28e9,q:'PPT 里已经财富自由了'},
+ {n:'战略融资 · 画饼基金',v:6.66e8,q:'饼很大，盘子更大'},
+ {n:'独角兽内部对赌估值',v:2.0e9,q:'对赌的是老板的心情'},
+ {n:'港股招股书草稿估值',v:9.9e8,q:'草稿也是纸，纸也能香'},
+];
+function optUnlocked(){return S.rank>=OPT_UNLOCK_RANK}
+function optPaperWorth(shares){const V=pick(OPT_VALS);const paper=Math.round(V.v*(shares/100));return{V,paper}}
+
 
 /* ---------- 文案 ---------- */
 const PIE=['好好干，明年给你配股！','公司就是你的家！（房租另算）','年轻人要多吃苦，苦着苦着就甜了','等公司上市，大家都财务自由！','我当年比你们拼多了','格局要打开！螺丝要拧紧！','今年效益不好，明年一定涨','你们不是在打螺丝，是在打造未来！','加油，下个月给你升职（画饼中）','不要只盯着工资，要看成长！'];
@@ -1012,7 +1062,7 @@ async function loadBoard(){const L=$('#boardList'),M=$('#boardMe');L.innerHTML='
 $('#btnBoard1').onclick=()=>openBoard('start');$('#btnBoard2').onclick=()=>openBoard('payslip');
 $('#boardRefresh').onclick=()=>{SFX.click();loadBoard()};$('#boardClose').onclick=()=>{SFX.click();if(boardFrom==='payslip')show('payslip');else goStart()};
 /* ---------- 界面切换 ---------- */
-const SCREENS=['start','clockin','pause','otModal','payslip','shopScr','imgModal','ending','signup','boardScr'];
+const SCREENS=['start','clockin','pause','otModal','payslip','shopScr','imgModal','ending','signup','boardScr','ipo'];
 function show(id){for(const s of SCREENS)$('#'+s).classList.toggle('hidden',s!==id&&!(id==='imgModal'&&s==='payslip')&&!(id==='boardScr'&&s===boardFrom))}
 function setGameUi(on){$('#hud').classList.toggle('hidden',!on);$('#controls').classList.toggle('hidden',!on);if(!on){$('#bossWarn').classList.add('hidden');$('#phone').classList.add('hidden');$('#chat').innerHTML=''}layout()}
 let toastT=0;function toast(t){const el=$('#toast');el.textContent=t;el.style.opacity=1;clearTimeout(toastT);toastT=setTimeout(()=>el.style.opacity=0,1600)}
@@ -1062,7 +1112,7 @@ function evalTitle(st){const tot=st.screws+st.stripped;const pr=tot?st.perfect/t
  if(st.maxCombo>=15)return{n:'连击狂魔',d:`最高 ${st.maxCombo} 连击，手速快过老板变脸`,k:'blue',b:'手速挺快，下个月单价……先不调了。'};
  if(st.screws<10)return{n:'带薪发呆艺术家',d:'今天的螺丝，主要靠意念拧',k:'gray',b:'你是来上班的还是来冥想的？'};
  return{n:'合格打工人',d:'平平无奇，按时下班，就是最大的胜利',k:'blue',b:'继续保持，公司的未来就靠你们了（我的未来靠公司）。'}}
-function buildSlip(st,payday,month,day,rankIdx,promo,monthTotal){const R=RANKS[rankIdx],u=R.unit;const inc=[],ded=[];
+function buildSlip(st,payday,month,day,rankIdx,promo,monthTotal){const R=RANKS[rankIdx],u=R.unit;const inc=[],ded=[];let optInfo=null;
  const I=(l,n,a)=>inc.push({l,n,a}),D=(l,n,a)=>ded.push({l,n,a});
  I('基本工资','日薪 · 老板说已经很高了',R.base);
  I('计件工资',`${st.pieces} 件 × ¥${fmt(u)}`,st.pieces*u);
@@ -1077,6 +1127,8 @@ function buildSlip(st,payday,month,day,rankIdx,promo,monthTotal){const R=RANKS[r
  if(payday){const late=month.late;I('全勤奖',late?`迟到 ${late} 次 · 痛失全勤`:'本月无迟到，难得！',late?0:100);
   const mpr=month.screws?month.perfect/month.screws:0;I('月度绩效',`本月完美率 ${Math.round(mpr*100)}%`,Math.round(mpr*60));
   I('高温补贴','已折算为一根冰棍（已吃）',0);I('老板画的饼','价值连城 · 暂不兑现',0)}
+ if(payday&&S.opt.shares>0){const ow=optPaperWorth(S.opt.shares);optInfo={shares:S.opt.shares,paper:ow.paper,valName:ow.V.n,quote:ow.V.q};
+  I('期权账面收益',`${S.opt.shares}% · ${ow.V.n} · 不可提现`,0)}
  if(st.stripped)D('滑丝赔偿',`${st.stripped} 颗 × ¥2`,st.stripped*2);
  if(st.missedPay)D('漏拧 · 质检扣款',`${st.missed} 件${st.urgentMissed?`（含加急 ${st.urgentMissed} 件双倍）`:''}`,st.missedPay);
  if(st.caught)D('摸鱼被抓',`${st.caught} 次 × ¥30 · 人赃并获`,st.caught*30);
@@ -1088,7 +1140,7 @@ function buildSlip(st,payday,month,day,rankIdx,promo,monthTotal){const R=RANKS[r
  const T=evalTitle(st);let boss=T.b;if(st.otRefused)boss+=' 另外，昨晚群里@你怎么不回？';if(st.caught&&T.k!=='fish')boss+=' 还有，上班别玩手机。';
  const m=Math.ceil(day/5);
  return{title:payday?`第 ${m} 月 · 月底工资条`:'日结工资条',payday,day,rank:R.n,meta:[['姓名',playerName()],['工号',PID],['职级',R.n],['日期',`第 ${day} 天${payday?'（发薪日！）':''}`]],
-  inc,ded,net,T,boss,promo,grade:g[0],monthTotal:payday?(monthTotal!=null?monthTotal:(month.earned||0)+net):null}}
+  inc,ded,net,T,boss,promo,grade:g[0],monthTotal:payday?(monthTotal!=null?monthTotal:(month.earned||0)+net):null,opt:optInfo}}
 function stampSvg(){const id='sp'+Math.random().toString(36).slice(2,7);return`<svg class="stamp" viewBox="0 0 100 100"><defs><path id="${id}" d="M50 50 m-36 0 a36 36 0 1 1 72 0 a36 36 0 1 1 -72 0"/></defs>
  <circle cx="50" cy="50" r="46" fill="none" stroke="#e0283f" stroke-width="4"/><text font-size="10.5" font-weight="900" fill="#e0283f" letter-spacing="1"><textPath href="#${id}" startOffset="2%">拧不完螺丝制品有限公司 · 财务</textPath></text>
  <polygon points="50,34 54.7,45 66,45.5 57,52.5 60.5,64 50,57 39.5,64 43,52.5 34,45.5 45.3,45" fill="#e0283f"/><text x="50" y="80" font-size="10" font-weight="900" fill="#e0283f" text-anchor="middle">财务专用章</text></svg>`}
@@ -1103,6 +1155,7 @@ function slipHtml(s){const row=(r,neg)=>`<div class="row"><span class="l">${r.l}
  <div class="net">${stampSvg()}<span class="l">实发工资</span><span class="a">${s.net<0?'-':''}¥${fmt(Math.abs(s.net))}</span></div>
  ${s.payday?`<div class="mtotal"><span>本月实发合计（5 天）</span><span>¥${fmt(s.monthTotal)}</span></div><div class="slipboard" id="slipBoard">${DEMO?'（演示模式：不提交工资榜）':'准备上榜…'}</div>`:''}
  ${s.net<0?'<div class="wallet" style="color:#d6334f;font-weight:800">恭喜，今天倒欠公司钱了 🙃</div>':''}
+ ${s.opt?`<div class="optbox"><b>📈 期权账面收益</b><span class="tag">不可提现</span><div>持有份额 ${s.opt.shares}% · ${esc(s.opt.valName)}</div><div class="big">¥${s.opt.paper.toLocaleString('zh-CN')}</div><div style="font-size:12px;color:#7a5a00;margin-top:2px">老板：「${esc(s.opt.quote)}」· 锁定期：直到公司真的上市（或你离职）</div></div>`:''}
  <div class="titlebadge">${medalSvg(s.T.k)}<div><small>今日称号</small><b>${s.T.n}</b><small>${s.T.d}</small></div></div>
  <div class="boss">老板批注：“${s.boss}”</div>
  ${s.promo?`<div class="promo">🎉 晋升通知：恭喜升为「${s.promo}」！基本工资 & 单价上涨</div>`:''}
@@ -1115,10 +1168,11 @@ function finishShift(){const st=G.stats;S.day++;const day=S.day,payday=day%5===0
  const slip=buildSlip(st,payday,M,day,oldRank,promo);S.money+=slip.net;if(payday)slip.monthTotal=M.earned+slip.net;S.totalEarned+=slip.net;S.bestDay=Math.max(S.bestDay,slip.net);M.earned+=slip.net;
  S.history.push({d:day,net:Math.round(slip.net*100)/100,t:slip.T.n});if(S.history.length>40)S.history.shift();
  if(payday)S.month=defMonth();save();showSlip(slip);if(payday&&!DEMO)handleMonthSubmit(slip.monthTotal,$('#slipBoard'));
- if(payday){const next=beltMonthMult();setTimeout(()=>{toast(`下月产线提速 · ×${next.toFixed(2)}`);SFX.warn()},900)}
+ if(payday){const next=beltMonthMult();setTimeout(()=>{toast(`下月产线提速 · ×${next.toFixed(2)}`);SFX.warn()},900);
+  if(shouldTriggerIpo())pendingIpo=true}
  if(promo)setTimeout(()=>SFX.fanfare(),600)}
 function showSlip(slip){curSlip=slip;screen='payslip';setGameUi(false);$('#slipBox').innerHTML=slipHtml(slip);show('payslip');$('#payslip').scrollTop=0;SFX.register()}
-$('#btnNext').onclick=()=>{SFX.click();if(S.rank===RANKS.length-1&&!S.endingSeen){showEnding();return}goClockIn()};
+$('#btnNext').onclick=()=>{SFX.click();if(pendingIpo){pendingIpo=false;showIpo();return}if(S.rank===RANKS.length-1&&!S.endingSeen){showEnding();return}goClockIn()};
 $('#btnShop2').onclick=()=>openShop('payslip');$('#btnHome').onclick=()=>{SFX.click();goStart()};
 $('#btnSaveSlip').onclick=()=>{if(!curSlip)return;SFX.click();const url=slipPng(curSlip);const a=document.createElement('a');a.href=url;a.download=`一起打螺丝-工资条-第${curSlip.day}天.png`;document.body.appendChild(a);a.click();a.remove();
  $('#slipImg').src=url;show('imgModal')};
@@ -1143,6 +1197,11 @@ function slipPng(s){const Wd=750,pad=48,lh=64;const rows=s.inc.length+s.ded.leng
   x.strokeStyle='#d9d5c3';x.setLineDash([2,4]);x.beginPath();x.moveTo(pad,y+lh-4);x.lineTo(Wd-pad,y+lh-4);x.stroke();x.setLineDash([]);y+=lh};
  sec('应发');s.inc.forEach(r=>row(r,false));y+=6;sec('扣款');s.ded.forEach(r=>row(r,true));
  y+=10;x.fillStyle='#2b2d42';x.fillRect(pad,y,Wd-pad*2,4);y+=62;const netY=y;x.font=F(900,34);x.fillText('实发工资',pad+6,y);x.textAlign='right';x.font=`900 56px "DejaVu Sans Mono",Menlo,monospace`;x.fillStyle='#d6334f';x.fillText((s.net<0?'-':'')+'¥'+fmt(Math.abs(s.net)),Wd-pad-6,y+6);x.textAlign='left';
+ if(s.opt){x.fillStyle='#fff3cd';rrect(x,pad,y,Wd-pad*2,130,14);x.fill();x.strokeStyle='#e0a400';x.lineWidth=3;x.setLineDash([6,4]);x.stroke();x.setLineDash([]);
+  x.fillStyle='#8a5a00';x.font=F(900,22);x.textAlign='left';x.fillText('📈 期权账面收益（不可提现）',pad+16,y+32);
+  x.font=F(500,20);x.fillText(`持有 ${s.opt.shares}% · ${s.opt.valName}`,pad+16,y+62);
+  x.fillStyle='#d6334f';x.font=`900 36px "DejaVu Sans Mono",Menlo,monospace`;x.fillText('¥'+s.opt.paper.toLocaleString('zh-CN'),pad+16,y+106);
+  x.fillStyle='#7a5a00';x.font=F(500,18);x.fillText('「'+s.opt.quote+'」',pad+16,y+128);y+=148}
  y+=40;x.fillStyle='#ffe9a8';rrect(x,pad,y,Wd-pad*2,120,18);x.fill();x.strokeStyle='#f0b429';x.lineWidth=3;x.stroke();
  const mc={gold:'#e0a400',red:'#e63958',blue:'#3a86ff',gray:'#8d97ab',fish:'#1fa3d6'}[s.T.k]||'#e0a400';x.fillStyle=mc;circ(x,pad+64,y+60,40);x.fill();x.fillStyle='#fff';circ(x,pad+64,y+60,28);x.fill();x.fillStyle=mc;x.fillRect(pad+50,y+56,28,8);x.fillRect(pad+60,y+46,8,28);
  x.fillStyle='#7a5a00';x.font=F(700,20);x.fillText('今日称号',pad+124,y+34);x.fillStyle='#2b2d42';x.font=F(900,34);x.fillText(s.T.n,pad+124,y+74);x.fillStyle='#7a5a00';x.font=F(500,19);x.fillText(s.T.d.slice(0,26),pad+124,y+104);
@@ -1161,6 +1220,7 @@ function shopIcon(id){const m={drill:`<svg viewBox="0 0 40 40"><rect x="4" y="10
  auto:`<svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="14" fill="#7fb6ff" stroke="#1f4fa0" stroke-width="2"/><path d="M20 8v6M20 26v6M8 20h6M26 20h6" stroke="#fff" stroke-width="3" stroke-linecap="round"/><circle cx="20" cy="20" r="5" fill="#ffcf3f"/></svg>`,
  wrist:`<svg viewBox="0 0 40 40"><rect x="6" y="13" width="28" height="14" rx="7" fill="#06c08f" stroke="#045c44" stroke-width="2"/><path d="M12 13v14M28 13v14" stroke="#fff" stroke-width="2" opacity=".6"/><circle cx="20" cy="20" r="3" fill="#fff"/></svg>`,
  radar:`<svg viewBox="0 0 40 40"><circle cx="20" cy="22" r="13" fill="#2b2d42"/><circle cx="20" cy="22" r="9" fill="none" stroke="#7dffb2" stroke-width="1.5"/><circle cx="20" cy="22" r="4.5" fill="none" stroke="#7dffb2" stroke-width="1.5"/><path d="M20 22L29 15" stroke="#7dffb2" stroke-width="2.5"/><circle cx="26" cy="27" r="2" fill="#ef476f"/></svg>`,
+ opt:`<svg viewBox="0 0 40 40"><rect x="6" y="8" width="28" height="24" rx="3" fill="#ffe08a" stroke="#a86200" stroke-width="2"/><path d="M10 14h20M10 20h14M10 26h18" stroke="#a86200" stroke-width="2"/><circle cx="28" cy="26" r="6" fill="#ef476f"/><text x="28" y="29" text-anchor="middle" font-size="8" font-weight="900" fill="#fff">%</text></svg>`,
  tea:`<svg viewBox="0 0 40 40"><path d="M10 12h20l-3 24H13z" fill="#f3d2b0" stroke="#7a4310" stroke-width="2"/><rect x="8" y="8" width="24" height="5" rx="2" fill="#fff" stroke="#7a4310" stroke-width="2"/><path d="M22 8l4-7" stroke="#ef476f" stroke-width="2.5"/><circle cx="16" cy="30" r="2" fill="#4d2606"/><circle cx="21" cy="32" r="2" fill="#4d2606"/><circle cx="24" cy="28" r="2" fill="#4d2606"/></svg>`};return m[id]}
 let shopFrom='start';
 function openShop(from){shopFrom=from||'start';SFX.click();renderShop();show('shopScr')}
@@ -1168,15 +1228,79 @@ function renderShop(){$('#shBal').textContent=fmt(S.money);const r=S.rank,R=RANK
  $('#rankBox').innerHTML=`<b style="font-size:15px">当前职级：${R.n}</b> · 日薪 ¥${R.base} · 单价 ¥${fmt(R.unit)}<br>${N?`下一级「${N.n}」：累计拧好 ${S.totalScrews}/${N.need} 颗`:'已经是老板了……但螺丝还得拧'}
  <div class="prog"><i style="width:${N?clamp((S.totalScrews-R.need)/(N.need-R.need)*100,0,100):100}%"></i></div>
  <div class="ladder">${RANKS.map((k,i)=>`<span class="${i===r?'cur':i<r?'done':''}">${i===RANKS.length-1&&r<i?'？？？':k.n}</span>`).join('→')}</div>`;
+ const unlocked=optUnlocked();
+ const optStatus=S.opt.shares?(S.opt.shares+'% 份额（纸面富贵）'):(unlocked?'尚未认购 · 下方三档任选（纸面富贵，不可提现）':'尚未配股 · 升至「线长」后可在下方认购');
+ const optHtml=`<div class="optown">📜 我的期权：${optStatus}${S.opt.ipoCount?` · 已敲钟 ${S.opt.ipoCount} 次`:''}</div>`+
+  OPT_PACKS.map(pk=>{const owned=!!S.opt.packs[pk.id];const lock=!unlocked;const can=!lock&&!owned&&S.money>=pk.price;
+   return`<div class="item${lock?' locked':''}"><div class="ic">${shopIcon('opt')}</div><div class="tx"><b>${pk.n}</b><span class="lv">${pk.tag}${owned?' · 已持有':''}</span><p>${pk.desc}</p>${lock?`<div class="lockhint">🔒 升至「${RANKS[OPT_UNLOCK_RANK].n}」后解锁（当前 ${R.n}）</div>`:''}</div>
+   <button class="btn ${owned||lock?'gray':can?'green':'gray'}" data-opt="${pk.id}" ${owned||lock||!can?'disabled':''}>${owned?'已认购':lock?'未解锁':'¥'+pk.price}</button></div>`}).join('');
  $('#shopList').innerHTML=SHOP.map(it=>{let lv,price,desc,maxed=false;
   if(it.tea){lv=`库存 ${S.tea} 杯`;price=it.price;desc=it.desc}else{const l=S.up[it.id];maxed=l>=it.max;lv=`Lv.${l}/${it.max}`;price=maxed?0:it.price[l];desc=maxed?'已满级（老板看了都想借）':it.desc[l]}
   return`<div class="item"><div class="ic">${shopIcon(it.id)}</div><div class="tx"><b>${it.n}</b><span class="lv">${lv}</span><p>${desc}</p></div>
-  <button class="btn ${maxed?'gray':'green'}" data-buy="${it.id}" ${maxed||S.money<price?'disabled':''}>${maxed?'满级':'¥'+price}</button></div>`}).join('');
- document.querySelectorAll('[data-buy]').forEach(b=>b.onclick=()=>buy(b.dataset.buy))}
+  <button class="btn ${maxed?'gray':'green'}" data-buy="${it.id}" ${maxed||S.money<price?'disabled':''}>${maxed?'满级':'¥'+price}</button></div>`}).join('')+optHtml;
+ document.querySelectorAll('[data-buy]').forEach(b=>b.onclick=()=>buy(b.dataset.buy));
+ document.querySelectorAll('[data-opt]').forEach(b=>b.onclick=()=>buyOpt(b.dataset.opt))}
 function buy(id){const it=SHOP.find(i=>i.id===id);let price;if(it.tea)price=it.price;else{const l=S.up[id];if(l>=it.max)return;price=it.price[l]}
  if(S.money<price){SFX.wrong();toast('钱不够……再拧几天吧');return}S.money-=price;if(it.tea)S.tea++;else S.up[id]++;save();SFX.register();toast(`购买成功：${it.n}`);renderShop()}
+function buyOpt(id){const pk=OPT_PACKS.find(p=>p.id===id);if(!pk)return;if(!optUnlocked()){SFX.wrong();toast('还没到线长，老板不给配股');return}
+ if(S.opt.packs[id]){toast('这份已经认购过啦');return}if(S.money<pk.price){SFX.wrong();toast('现金不够买饼……先拧几天');return}
+ S.money-=pk.price;S.opt.packs[id]=1;S.opt.shares=Math.round((S.opt.shares+pk.shares)*1000)/1000;save();SFX.fanfare();toast(`恭喜获配 ${pk.tag}！纸面已加钱`);renderShop()}
 $('#btnShop1').onclick=()=>openShop('start');$('#shopClose').onclick=()=>{SFX.click();if(shopFrom==='payslip')show('payslip');else goStart()};
 $('#shopGo').onclick=()=>{SFX.click();if(S.rank===RANKS.length-1&&!S.endingSeen&&shopFrom==='payslip'){showEnding();return}goClockIn()};
+
+
+/* ---------- 上市敲钟 ---------- */
+let pendingIpo=false,ipoAnim=0,ipoState=null;
+function shouldTriggerIpo(){
+ if(DEMO==='ipo')return true;
+ if(S.opt.shares<.05)return false; // 至少凑够约半档
+ if(S.day<(S.opt.lastIpoDay||0)+15)return false; // 约每 15～20 天一次
+ if(S.day<15&&S.opt.ipoCount===0)return false; // 第一次最早第 15 天附近
+ return true}
+const IPO_PUNCH=[
+ {t:'股价闪崩',d:'开盘 3 秒后闪崩 87%。分析师：情绪面正常，基本面……还在拧螺丝。',cash:.88},
+ {t:'锁定期三年',d:'恭喜！股份已锁定至你离职后的后年。敲钟红包先发着。',cash:.88},
+ {t:'路演取消',d:'投资人发现公司主营业务是「打螺丝」，集体鼓掌离场。',cash:.88},
+ {t:'发行成功（名义上）',d:'股票代码 LS.screw。你的份额仍不可提现，但气氛到了。',cash:.88},
+];
+function showIpo(){screen='ipo';setGameUi(false);show('ipo');ipoAnim=0;
+ const punch=pick(IPO_PUNCH);const cash=punch.cash;S.money=Math.round((S.money+cash)*100)/100;S.opt.cash=(S.opt.cash||0)+cash;
+ S.opt.lastIpoDay=S.day;S.opt.ipoCount=(S.opt.ipoCount||0)+1;save();
+ ipoState={t0:performance.now()/1000,punch,cash,price:128,crash:punch.t.includes('闪崩'),phase:0};
+ $('#ipoTickText').textContent=`LS.screw  开盘价 ¥${ipoState.price}.00  ·  你的份额 ${S.opt.shares}%  ·  市值纸面 ¥${Math.round(ipoState.price*1e8*(S.opt.shares/100)).toLocaleString('zh-CN')}  ·  锁定期：很长  ·  `;
+ $('#ipoPunch').innerHTML=`<div style="opacity:0;animation:fadein .6s .8s forwards"><b style="color:#ffd966">敲钟结果：${punch.t}</b><br>${punch.d}<br><span class="warn">实发敲钟补贴</span><br><span class="cash">¥${fmt(cash)}</span><div style="font-size:12px;opacity:.75;margin-top:6px">老板：「上市是大家的，螺丝还是要拧的。」</div></div>`;
+ SFX.fanfare();setTimeout(()=>SFX.bell(),400);setTimeout(()=>SFX.coin(),1200)}
+function drawIpo(t){const c=$('#ipoCv');if(!c||!ipoState)return;const w=c.clientWidth,h=c.clientHeight;if(!w)return;
+ if(c.width!==Math.round(w*DPR)){c.width=Math.round(w*DPR);c.height=Math.round(h*DPR)}
+ const x=c.getContext('2d');x.setTransform(DPR,0,0,DPR,0,0);x.clearRect(0,0,w,h);
+ const age=t-ipoState.t0;
+ // stage floor
+ x.fillStyle=vgrad(x,h*.55,h,'#2a3555','#12182a');x.fillRect(0,h*.55,w,h*.45);
+ // confetti / champagne bubbles
+ for(let i=0;i<18;i++){const px=(Math.sin(i*1.7+age)*.5+.5)*w,py=h-((age*40+i*37)%(h+40));
+  x.fillStyle=`hsla(${(i*47)%360},90%,65%,.85)`;x.beginPath();x.arc(px,py,3+i%3,0,TAU);x.fill()}
+ // gong
+ const gx=w*.28,gy=h*.48,gs=Math.min(w,h)*.22;
+ x.save();x.translate(gx,gy);const hit=age>0.35&&age<1.1;const shake=hit?Math.sin(age*60)*4:0;x.rotate(shake*.02);
+ x.fillStyle='#5a3a18';x.fillRect(-6,gs*.7,12,gs*.55);x.fillStyle=rgrad(x,0,0,gs,'#ffe08a','#c8922a');circ(x,0,0,gs);x.fill();
+ x.strokeStyle='#8a5a00';x.lineWidth=4;circ(x,0,0,gs*.72);x.stroke();circ(x,0,0,gs*.35);x.stroke();
+ x.fillStyle='#fff8d6';x.font=`900 ${gs*.22}px ${FONT}`;x.textAlign='center';x.textBaseline='middle';x.fillText('锣',0,2);
+ if(hit){x.strokeStyle=`rgba(255,220,120,${1-(age-.35)})`;x.lineWidth=3;for(let k=1;k<=3;k++){circ(x,0,0,gs+k*10+(age-.35)*30);x.stroke()}}
+ x.restore();
+ // boss with mallet
+ drawBoss(x,w*.72,h*.88,h*.55,-1,age*3,hit?'happy':'smug',false);
+ x.fillStyle='#ffcf3f';x.font=`900 ${Math.max(14,h*.06)}px ${FONT}`;x.textAlign='center';
+ x.fillText(age<1.2?'……敲！':'上市啦？（大概）',w*.72,h*.18);
+ // champagne
+ const cx=w*.5,cy=h*.7;x.fillStyle='#e8f6ff';rrect(x,cx-8,cy-40,16,50,4);x.fill();x.fillStyle='#ffd966';x.fillRect(cx-6,cy-5,12,12);
+ for(let i=0;i<8;i++){const a=age*2+i;x.fillStyle='rgba(255,255,255,.7)';x.beginPath();x.arc(cx+Math.sin(a)*12,cy-40-age*25-i*8,2,0,TAU);x.fill()}
+ // price flash
+ let price=ipoState.price;if(ipoState.crash&&age>1.4)price=Math.max(8,Math.round(ipoState.price*(1-(age-1.4)*.5)));
+ x.fillStyle=ipoState.crash&&age>1.4?'#ff6b8a':'#7dffb2';x.font=`900 ${h*.11}px "DejaVu Sans Mono",Menlo,monospace`;
+ x.textAlign='center';x.fillText(`¥${price}`,w*.55,h*.42);
+ if(ipoState.crash&&age>1.6){x.fillStyle='#ff6b8a';x.font=`900 ${h*.055}px ${FONT}`;x.fillText('闪崩中…',w*.55,h*.52)}
+}
+$('#ipoBtn').onclick=()=>{SFX.click();ipoState=null;if(S.rank===RANKS.length-1&&!S.endingSeen){showEnding();return}goClockIn()};
 
 /* ---------- 结局 ---------- */
 let endAnim=0;
@@ -1210,6 +1334,7 @@ function loop(ts){const dt=Math.min(.05,(ts-lastT)/1000);lastT=ts;now=ts/1000;
  if(screen==='game'||screen==='payslip')render(now);
  if(screen==='start')drawStartMascot(now);
  if(screen==='ending')drawEnding(now);
+ if(screen==='ipo')drawIpo(now);
  requestAnimationFrame(loop)}
 addEventListener('resize',()=>{layout()});
 $('#btnStart').onclick=()=>{SFX.click();if(!PNAME)openSignup(true);else goClockIn()};
@@ -1224,9 +1349,11 @@ window.__dls={get G(){return G},get S(){return S},screen:()=>screen,
 function fakeStats(){const s=newStats(false);Object.assign(s,{pieces:38,perfectParts:21,screws:96,perfect:81,ok:15,stripped:3,bad:2,missed:2,missedPay:6,caught:1,gold:2,goldPay:12,urgent:3,urgentPay:4.5,otPieces:7,otPay:5.25,comboBonus:6,maxCombo:31,redpack:.01,praise:2,ot:true,fishTime:6});return s}
 function boot(){layout();refreshMute();goStart();requestAnimationFrame(loop);
  if(!PNAME&&(!DEMO||DEMO==='signup'))openSignup(true);else if(DEMO==='signup')openSignup(false);else if(DEMO==='board')openBoard('start');else setTimeout(retryPending,1500);
- if(DEMO==='payslip'){const M=Object.assign(defMonth(),{days:5,late:0,screws:420,perfect:351,base:400});const st=fakeStats();const slip=buildSlip(st,true,M,5,1,'技术骨干');S.money=Math.max(S.money,1288);showSlip(slip)}
+ if(DEMO==='payslip'){S.opt.shares=Math.max(S.opt.shares,.16);S.opt.packs={a:1,b:1,c:1};const M=Object.assign(defMonth(),{days:5,late:0,screws:420,perfect:351,base:400});const st=fakeStats();const slip=buildSlip(st,true,M,5,1,'技术骨干');S.money=Math.max(S.money,1288);showSlip(slip)}
  else if(DEMO==='dayslip'){const st=fakeStats();st.late=true;st.ot=false;st.otRefused=true;const slip=buildSlip(st,false,defMonth(),3,0,null);showSlip(slip)}
- else if(DEMO==='shop'){S.money=Math.max(S.money,1888);S.up.drill=Math.max(S.up.drill,1);openShop('start')}
+ else if(DEMO==='shop'||DEMO==='options'){S.money=Math.max(S.money,2888);S.rank=Math.max(S.rank,OPT_UNLOCK_RANK);S.up.drill=Math.max(S.up.drill,1);openShop('start')}
+ else if(DEMO==='options-lock'){S.money=Math.max(S.money,2888);S.rank=0;openShop('start')}
+ else if(DEMO==='ipo'){S.opt.shares=Math.max(S.opt.shares,.16);S.opt.packs={a:1,b:1,c:1};S.day=Math.max(S.day,15);showIpo()}
  else if(DEMO==='play'||DEMO==='boss'||DEMO==='ot'){startShift(false)}
  else if(DEMO==='ending'){showEnding()}
  else if(DEMO==='clockin'){goClockIn()}}
