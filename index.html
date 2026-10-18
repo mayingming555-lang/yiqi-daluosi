@@ -174,6 +174,69 @@ background-image:linear-gradient(rgba(0,0,0,.025) 1px,transparent 1px);backgroun
 @media (orientation:landscape) and (max-height:500px){
  #mascotCv{width:150px;height:150px}.title{font-size:34px}
 }
+
+/* 入职登记 */
+#signup{background:radial-gradient(circle at 50% 30%,#e6f0ff 0,#a9c8ff 55%,#6d9cf0 100%)}
+#signup::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.5) 2px,transparent 2.5px);background-size:26px 26px;pointer-events:none}
+.hrform{background:#fffdf4;border-radius:10px;max-width:420px;width:100%;padding:16px 18px 14px;box-shadow:0 16px 40px rgba(0,0,0,.4);animation:pop .3s cubic-bezier(.3,1.6,.6,1);position:relative;flex-shrink:0;
+ background-image:linear-gradient(rgba(58,134,255,.06) 1px,transparent 1px);background-size:100% 28px;border-top:8px solid #3a86ff}
+.hrhead{text-align:center;border-bottom:2px solid var(--ink);padding-bottom:6px;margin-bottom:10px}
+.hrhead .co{font-size:12px;color:#8a8f9f;font-weight:900;letter-spacing:2px}
+.hrhead h2{margin:2px 0;font-size:26px;letter-spacing:8px}
+.hrhead .no{font-size:11px;color:#999;font-family:"DejaVu Sans Mono",monospace}
+.hrbody{display:flex;gap:12px}
+.photo{width:92px;flex-shrink:0;border:2px dashed #9aa3b5;border-radius:6px;height:118px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#eef4ff;font-size:11px;color:#7a7f95}
+.photo canvas{width:80px;height:90px}
+.fields{flex:1;min-width:0}
+.fields label{font-weight:900;font-size:14px;display:block}.fields label i{color:#ef476f;font-style:normal}
+#suName{width:100%;font:inherit;font-size:18px;font-weight:800;padding:6px 4px;border:0;border-bottom:2px solid var(--ink);background:transparent;outline:none;color:#1d3fa8;-webkit-user-select:text;user-select:text}
+#suName:focus{border-bottom-color:#3a86ff;background:rgba(58,134,255,.06)}
+.fields .hint{font-size:11.5px;color:#888;margin:3px 0 6px;min-height:16px}.fields .hint.err{color:#d6334f;font-weight:800}
+.kv{display:flex;justify-content:space-between;font-size:13px;border-bottom:1px dotted #ccc;padding:3px 0}.kv span{font-family:"DejaVu Sans Mono",monospace;font-weight:700}
+.checks{margin-top:10px;font-size:12.5px;color:#555;line-height:1.7;background:#f3f6fc;border-radius:8px;padding:6px 10px}
+.hrform .sign{position:absolute;right:16px;bottom:62px;font-size:11px;color:#bbb}
+/* 工牌 */
+.badgeWrap{display:flex;flex-direction:column;align-items:center;animation:pop .4s cubic-bezier(.3,1.6,.6,1)}
+.lanyard{width:26px;height:70px;background:repeating-linear-gradient(180deg,#ef476f 0 10px,#ff6b8a 10px 20px);border-radius:0 0 4px 4px;box-shadow:inset 0 0 0 2px rgba(0,0,0,.08)}
+.clip{width:44px;height:16px;background:linear-gradient(#e9edf5,#9aa3b5);border-radius:5px;margin-top:-4px;box-shadow:0 2px 0 rgba(0,0,0,.2)}
+.gp{width:230px;border-radius:18px;background:#fff;overflow:hidden;box-shadow:0 18px 40px rgba(0,0,0,.45),inset 0 0 0 2px #fff;margin-top:-2px;text-align:center;position:relative}
+.gp .top{background:linear-gradient(135deg,#3a86ff,#1f5fcc);color:#fff;padding:12px 8px 34px;font-weight:900;font-size:13px;letter-spacing:1px}
+.gp .top small{display:block;font-size:10px;opacity:.85;letter-spacing:3px}
+.gp .ph{width:92px;height:104px;margin:-28px auto 0;border-radius:12px;background:#eef4ff;border:4px solid #fff;box-shadow:0 4px 10px rgba(0,0,0,.2);overflow:hidden}
+.gp .ph canvas{width:84px;height:96px}
+.gp .nm{font-size:26px;font-weight:900;margin:8px 8px 0;word-break:break-all;line-height:1.2}
+.gp .id{font-family:"DejaVu Sans Mono",monospace;font-weight:700;color:#1f5fcc;font-size:16px;margin-top:2px}
+.gp .job{font-size:12px;color:#777;margin:4px 0 8px}
+.gp .bar{height:30px;margin:0 22px 14px;background:repeating-linear-gradient(90deg,#2b2d42 0 2px,transparent 2px 4px,#2b2d42 4px 7px,transparent 7px 9px,#2b2d42 9px 10px,transparent 10px 13px)}
+.gp::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.55) 45%,transparent 60%);transform:translateX(-100%);animation:shine 2.4s 1s infinite}
+@keyframes shine{to{transform:translateX(100%)}}
+.mybadge{position:relative;display:inline-flex;align-items:center;gap:6px;background:#fff;border-radius:12px;padding:5px 12px 5px 6px;box-shadow:0 3px 0 rgba(0,0,0,.15),inset 0 0 0 2px #3a86ff;font-size:14px;margin-top:6px;max-width:92vw}
+.mybadge .ic{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#3a86ff,#1f5fcc);color:#fff;font-size:12px;font-weight:900;display:flex;align-items:center;justify-content:center}
+.mybadge b{max-width:9em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mybadge small{font-family:"DejaVu Sans Mono",monospace;color:#1f5fcc;font-weight:700}
+/* 光荣榜 */
+.board{position:relative;max-width:440px;width:100%;background:#c99a62;background-image:radial-gradient(rgba(90,50,20,.25) 1.2px,transparent 1.6px),radial-gradient(rgba(255,240,210,.25) 1px,transparent 1.4px);background-size:9px 9px,13px 13px;
+ border:12px solid #7a4a24;border-radius:14px;box-shadow:0 18px 40px rgba(0,0,0,.45),inset 0 0 18px rgba(60,30,10,.5);padding:12px 12px 12px;animation:pop .3s cubic-bezier(.3,1.6,.6,1);flex-shrink:0}
+.board .bhead{background:linear-gradient(#e63946,#b8202f);color:#ffe066;font-weight:900;font-size:22px;text-align:center;padding:7px 4px;border-radius:6px;letter-spacing:4px;box-shadow:0 4px 0 rgba(0,0,0,.25);text-shadow:0 2px 0 #7a0f1a;position:relative}
+.board .bhead::before,.board .bhead::after{content:"";position:absolute;top:-6px;width:14px;height:14px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff,#3a86ff 60%);box-shadow:0 2px 2px rgba(0,0,0,.4)}
+.board .bhead::before{left:10px}.board .bhead::after{right:10px}
+.board .bsub{text-align:center;font-size:12px;color:#3d220b;font-weight:800;margin:6px 0}
+.board .paper{background:#fffdf4;border-radius:4px;padding:6px 8px;box-shadow:0 4px 8px rgba(0,0,0,.25);transform:rotate(-.6deg);min-height:160px;max-height:52vh;overflow:auto}
+.brow{display:flex;align-items:center;gap:8px;padding:6px 4px;border-bottom:1px dashed #ddd;font-size:15px}
+.brow .rk{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;background:#e9edf5;color:#555;flex-shrink:0}
+.brow.r1 .rk{background:radial-gradient(circle at 35% 30%,#fff6b0,#e0a400);color:#6b4a00}.brow.r2 .rk{background:radial-gradient(circle at 35% 30%,#fff,#a9b2c3);color:#3b3f55}.brow.r3 .rk{background:radial-gradient(circle at 35% 30%,#ffe0c2,#c97a3a);color:#5a2d00}
+.brow .nm{flex:1;min-width:0;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.brow .nm small{font-family:"DejaVu Sans Mono",monospace;color:#999;font-weight:400;font-size:11px;margin-left:4px}
+.brow .sc{font-family:"DejaVu Sans Mono",monospace;font-weight:900;color:#d6334f}
+.brow.mine{background:linear-gradient(90deg,#fff1b3,#ffe08a);border-radius:8px;border-bottom-color:transparent}
+.brow .you{background:#ef476f;color:#fff;font-size:11px;border-radius:6px;padding:0 5px;margin-left:4px;font-weight:900}
+.bempty{text-align:center;color:#888;padding:30px 10px;font-size:14px;line-height:1.7}
+.board .me{margin-top:10px;background:rgba(43,45,66,.88);color:#fff;border-radius:10px;padding:8px 10px;font-size:13.5px;text-align:center;font-weight:700}
+.spin{width:28px;height:28px;border-radius:50%;border:4px solid #eee;border-top-color:#ef476f;animation:sp 1s linear infinite;margin:10px auto}
+@keyframes sp{to{transform:rotate(360deg)}}
+.slipboard{margin-top:8px;text-align:center;font-size:13.5px;font-weight:800;border-radius:10px;padding:7px;background:#eef4ff;color:#1f4fa0;border:1.5px dashed #3a86ff}
+.slipboard.ok{background:#e6fff5;color:#05744f;border-color:#06c08f}.slipboard.err{background:#fff0f3;color:#b8264b;border-color:#ef476f}
+.slip .mtotal{display:flex;justify-content:space-between;font-size:14px;font-weight:800;margin-top:4px;color:#555}
 </style>
 </head>
 <body>
@@ -211,6 +274,7 @@ background-image:linear-gradient(rgba(0,0,0,.025) 1px,transparent 1px);backgroun
  <div class="bgdots"></div>
  <button class="cornerBtn" id="muteBtn1" aria-label="静音">🔊</button>
  <div class="titlebox"><h1 class="title">一起打螺丝</h1><div class="subtitle">打工人专属 · 拧紧每一天</div></div>
+ <button class="mybadge hidden" id="myBadge" aria-label="我的工牌"><span class="ic">工牌</span><b id="mbName">打工人</b><small id="mbPid">LS-000000</small><span>✎</span></button>
  <canvas id="mascotCv"></canvas>
  <div class="startCard">
   <div class="statline"><span id="sRank">普工</span><span>第 <b id="sDay">1</b> 天</span><span>余额 ¥<b id="sMoney">0</b></span></div>
@@ -224,6 +288,7 @@ background-image:linear-gradient(rgba(0,0,0,.025) 1px,transparent 1px);backgroun
  <div class="btnrow">
   <button class="btn" id="btnStart">▶ 开始上班</button>
   <button class="btn blue" id="btnShop1">🛒 小卖部</button>
+  <button class="btn red" id="btnBoard1">🏆 工资榜</button>
  </div>
  <div class="foot">纯属虚构 · 如有雷同，那你也在打螺丝 · <a href="#" id="btnReset" style="color:inherit">重置存档</a></div>
 </div>
@@ -260,6 +325,7 @@ background-image:linear-gradient(rgba(0,0,0,.025) 1px,transparent 1px);backgroun
   <button class="btn blue small" id="btnSaveSlip">📷 保存工资条</button>
   <button class="btn green small" id="btnNext">明天继续打螺丝 ▶</button>
   <button class="btn small" id="btnShop2">🛒 小卖部</button>
+  <button class="btn red small" id="btnBoard2">🏆 工资榜</button>
   <button class="btn gray small" id="btnHome">首页</button>
  </div></div>
 
@@ -273,6 +339,39 @@ background-image:linear-gradient(rgba(0,0,0,.025) 1px,transparent 1px);backgroun
 <div id="imgModal" class="screen dim hidden"><div class="card"><h2>工资条已生成</h2><p style="margin:0 0 10px;font-size:13px;color:#666">电脑已自动下载；手机请长按图片保存 / 分享</p><img id="slipImg" alt="工资条"><div class="btnrow"><button class="btn small" id="imgClose">好的</button></div></div></div>
 
 <div id="ending" class="screen hidden"><canvas id="endCv"></canvas><div class="story" id="endStory"></div><div class="btnrow"><button class="btn" id="endBtn">……那就继续打螺丝吧</button></div></div>
+
+
+<div id="signup" class="screen dim hidden">
+ <div class="hrform" id="hrForm">
+  <div class="hrhead"><div class="co">拧不完螺丝制品有限公司 · 人力资源部</div><h2>入职登记表</h2><div class="no">表单编号 HR-<span id="suNo">0001</span></div></div>
+  <div class="hrbody">
+   <div class="photo"><canvas id="suCv" width="160" height="180"></canvas><span>一寸免冠照</span></div>
+   <div class="fields">
+    <label for="suName">员工姓名 <i>*</i></label>
+    <input id="suName" type="text" maxlength="24" placeholder="例如：张三" autocomplete="off" enterkeyhint="done">
+    <div class="hint" id="suHint">1–12 个字，会印在工牌和工资条上</div>
+    <div class="kv"><b>工号</b><span id="suPid">LS-000000</span></div>
+    <div class="kv"><b>岗位</b><span>螺丝岗 · 3 号线</span></div>
+    <div class="kv"><b>入职日期</b><span id="suDate"></span></div>
+   </div>
+  </div>
+  <div class="checks"><div>☑ 本人自愿加班（默认勾选，无法取消）</div><div>☑ 已阅读并同意《福报协议》全文（共 0 页）</div></div>
+  <div class="btnrow"><button class="btn green" id="suOk">✍ 签字入职</button><button class="btn gray hidden" id="suCancel">取消</button></div>
+ </div>
+ <div class="badgeWrap hidden" id="badgeWrap">
+  <div class="lanyard"></div><div class="clip"></div>
+  <div class="gp" id="gpCard"><div class="top"><small>EMPLOYEE CARD</small>拧不完螺丝制品有限公司</div><div class="ph"><canvas id="gpCv" width="168" height="192"></canvas></div>
+   <div class="nm" id="gpName">打工人</div><div class="id" id="gpPid">LS-000000</div><div class="job">螺丝岗 · 3 号线 · 正式工（试用期 ∞）</div><div class="bar"></div></div>
+  <div class="btnrow"><button class="btn" id="gpGo">▶ 开始上班</button></div>
+ </div>
+</div>
+
+<div id="boardScr" class="screen dim hidden"><div class="board">
+ <div class="bhead">本厂月薪光荣榜</div><div class="bsub">按单月实发工资排名 · 每位员工只计最高一个月 · 前 20 名</div>
+ <div class="paper" id="boardList"></div>
+ <div class="me" id="boardMe">……</div>
+ <div class="btnrow"><button class="btn small blue" id="boardRefresh">↻ 刷新</button><button class="btn small gray" id="boardClose">返回</button></div>
+</div></div>
 
 <div id="toast"></div>
 <script>
@@ -823,9 +922,79 @@ function updateHud(){if(!G)return;$('#hClock').textContent=clockStr();$('#hClock
  const n=liveNet();if(Math.abs(n-G.lastPay)>.001){G.lastPay=n;$('#hPay').textContent=fmt(n)}
  $('#hDay').textContent=S.day+1;const e=$('#hEnergy');e.style.width=G.energy+'%';e.classList.toggle('low',G.energy<30);
  $('#hCombo').textContent=G.combo>=3?`🔥 连击 ×${G.combo}`:'';$('#teaN').textContent=S.tea}
+/* ---------- 员工档案（入职登记） ---------- */
+const PID_KEY='dls_pid',PNAME_KEY='dls_pname',OBEST_KEY='dls_online_best',OPEND_KEY='dls_online_pending';
+const lsGet=k=>{try{return localStorage.getItem(k)}catch(e){return null}},lsSet=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
+function genPid(){const A='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let s='';const r=new Uint32Array(6);try{crypto.getRandomValues(r)}catch(e){for(let i=0;i<6;i++)r[i]=Math.random()*1e9}for(let i=0;i<6;i++)s+=A[r[i]%A.length];return'LS-'+s}
+let PID=lsGet(PID_KEY);if(!/^LS-[A-Z0-9]{6}$/.test(PID||'')){PID=genPid();lsSet(PID_KEY,PID)}
+let PNAME=lsGet(PNAME_KEY)||'';
+function cleanName(raw){let s=String(raw||'').replace(/<[^>]*>/g,'').replace(/[<>&"'`#\\\u0000-\u001f\u007f\u200b-\u200f\u2028\u2029\ufeff]/g,'').replace(/\s+/g,' ').trim();
+ const a=Array.from(s);if(a.length>12)s=a.slice(0,12).join('').trim();return s}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function playerName(){return PNAME||'打工人'}
+function refreshBadge(){const b=$('#myBadge');b.classList.toggle('hidden',!PNAME);$('#mbName').textContent=playerName();$('#mbPid').textContent=PID}
+function drawPhoto(cv,mood){const x=cv.getContext('2d');x.setTransform(1,0,0,1,0,0);x.clearRect(0,0,cv.width,cv.height);x.fillStyle=vgrad(x,0,cv.height,'#dce9ff','#b7cdf5');x.fillRect(0,0,cv.width,cv.height);
+ drawMascot(x,cv.width/2,cv.height*.52,cv.width*.27,mood||'tired',1.5,false)}
+let suFirst=true;
+function openSignup(first){suFirst=!!first;screen='signup';setGameUi(false);show('signup');$('#hrForm').classList.remove('hidden');$('#badgeWrap').classList.add('hidden');
+ $('#suPid').textContent=PID;const d=new Date();$('#suDate').textContent=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+ $('#suNo').textContent=PID.slice(3);$('#suName').value=PNAME;$('#suHint').textContent='1–12 个字，会印在工牌和工资条上';$('#suHint').classList.remove('err');
+ $('#suCancel').classList.toggle('hidden',!PNAME);$('#suOk').textContent=PNAME?'✍ 确认改名':'✍ 签字入职';drawPhoto($('#suCv'));
+ if(!('ontouchstart' in window))setTimeout(()=>$('#suName').focus(),300)}
+function submitSignup(){const n=cleanName($('#suName').value);if(!n){$('#suHint').textContent='请填写姓名（不能为空，HTML 和特殊符号会被去掉）';$('#suHint').classList.add('err');SFX.wrong();return}
+ const renamed=!!PNAME&&PNAME!==n;PNAME=n;lsSet(PNAME_KEY,n);$('#suName').blur();SFX.stamp();setTimeout(()=>SFX.fanfare(),200);
+ $('#hrForm').classList.add('hidden');$('#badgeWrap').classList.remove('hidden');$('#gpName').textContent=n;$('#gpPid').textContent=PID;drawPhoto($('#gpCv'),'happy');
+ $('#gpGo').textContent=suFirst?'▶ 开始上班':'好的';refreshBadge();if(renamed)toast('改名成功（工资榜下次上榜时更新）')}
+$('#suOk').onclick=submitSignup;$('#suName').addEventListener('keydown',e=>{e.stopPropagation();if(e.key==='Enter')submitSignup()});
+$('#suCancel').onclick=()=>{SFX.click();goStart()};
+$('#gpGo').onclick=()=>{SFX.click();if(suFirst)goClockIn();else goStart()};
+$('#myBadge').onclick=()=>{SFX.click();openSignup(false)};
+
+/* ---------- 月工资排行榜（Scores 服务） ---------- */
+const SCORES_BASE='https://scores.keithcirkel.co.uk',SCORES_GAME='nYGGwkUDlR3Z'; // 仅游戏 ID，管理密码不在客户端
+const boardKey=pid=>String(pid).slice(3,8); // 工号后 6 位中的前 5 位，用于去重
+function utf8Trunc(s,max){const te=new TextEncoder();let out='',b=0;for(const ch of s){const n=te.encode(ch).length;if(b+n>max)break;out+=ch;b+=n}return out}
+function boardName(){return`${utf8Trunc(playerName(),9)||'工'}#${boardKey(PID)}`} // 服务端名字上限 15 字节
+function parseEntry(e){const raw=String(e.name||'');const i=raw.lastIndexOf('#');let name=raw,key='';if(i>0&&/^[A-Z0-9]{5}$/.test(raw.slice(i+1))){name=raw.slice(0,i);key=raw.slice(i+1)}else key='~'+raw;
+ return{name,key,score:Math.round(+e.score||0)}}
+async function fetchJ(url,opt={},ms=9000){const ac2=new AbortController();const t=setTimeout(()=>ac2.abort(),ms);try{const r=await fetch(url,Object.assign({signal:ac2.signal,cache:'no-store'},opt));return r}finally{clearTimeout(t)}}
+async function fetchBoard(){const r=await fetchJ(`${SCORES_BASE}/g/${SCORES_GAME}.json`);if(!r.ok)throw new Error('HTTP '+r.status);const j=await r.json();
+ const best=new Map();for(const e of (j.scores||[])){const p=parseEntry(e);const o=best.get(p.key);if(!o||p.score>o.score)best.set(p.key,p)}
+ const list=[...best.values()].sort((a,b)=>b.score-a.score);list.forEach((p,i)=>p.rank=i+1);return list}
+async function submitOnline(score){let last='';
+ for(let attempt=0;attempt<2;attempt++){
+  const t=await fetchJ(`${SCORES_BASE}/g/${SCORES_GAME}/token`,{method:'POST'});if(!t.ok)throw new Error('token HTTP '+t.status);const {token}=await t.json();
+  const body=new URLSearchParams({token,name:boardName(),score:String(score)});
+  const r=await fetchJ(`${SCORES_BASE}/g/${SCORES_GAME}`,{method:'POST',body});if(r.ok)return true;
+  last=`HTTP ${r.status} ${(await r.text().catch(()=>'')).slice(0,80)}`;if(r.status!==403)break}
+ throw new Error(last)}
+function onlineBest(){return +(lsGet(OBEST_KEY)||0)}
+/* 月底提交：只在超过本人已提交最佳时提交 */
+async function handleMonthSubmit(total,el){const sc=Math.round(total);const set=(cls,html)=>{if(el){el.className='slipboard '+cls;el.innerHTML=html}};
+ if(sc<=0){set('err',`本月实发 ¥${sc}，没脸上榜（≤0 不提交）`);return}
+ const best=onlineBest();if(sc<=best){set('',`本月 ¥${sc} 未超过你的榜上最佳 ¥${best}，不重复提交`);fetchBoard().then(l=>{const me=l.find(p=>p.key===boardKey(PID));if(me)set('',`本月 ¥${sc} 未超过你的最佳 ¥${best} · 你目前第 ${me.rank} 名`)}).catch(()=>{});return}
+ set('','<span class="spin" style="display:inline-block;width:14px;height:14px;border-width:3px;margin:0 6px -2px 0"></span>正在把工资条贴到光荣榜…');
+ try{await submitOnline(sc);lsSet(OBEST_KEY,String(sc));try{localStorage.removeItem(OPEND_KEY)}catch(e){}
+  let rk='';try{const l=await fetchBoard();const me=l.find(p=>p.key===boardKey(PID));if(me)rk=`，当前第 ${me.rank} 名`}catch(e){}
+  set('ok',`🏆 已上榜${rk}！（本月 ¥${sc}）`);SFX.fanfare()}
+ catch(e){lsSet(OPEND_KEY,String(sc));set('err',`网络开小差，没贴上榜（¥${sc}），下次打开会自动重试`);console.info('[dls] submit failed',e&&e.message)}}
+async function retryPending(){const p=+(lsGet(OPEND_KEY)||0);if(!p||p<=onlineBest()||!PNAME||DEMO)return;try{await submitOnline(p);lsSet(OBEST_KEY,String(p));localStorage.removeItem(OPEND_KEY)}catch(e){}}
+let boardFrom='start';
+function openBoard(from){boardFrom=from||'start';SFX.click();show('boardScr');loadBoard()}
+async function loadBoard(){const L=$('#boardList'),M=$('#boardMe');L.innerHTML='<div class="spin"></div><div class="bempty" style="padding:4px">正在从公告栏上抄名单…</div>';M.textContent='……';
+ await retryPending();
+ try{const list=await fetchBoard();const myKey=boardKey(PID);const me=list.find(p=>p.key===myKey);
+  if(!list.length)L.innerHTML='<div class="bempty">光荣榜还空着，虚位以待！<br>每满 5 天（一个月）发薪时，你的月工资会自动上榜。</div>';
+  else L.innerHTML=list.slice(0,20).map(p=>{const mine=p.key===myKey;const nm=mine?playerName():p.name;
+   return`<div class="brow r${p.rank}${mine?' mine':''}"><span class="rk">${p.rank}</span><span class="nm">${esc(nm)}${mine?`<small>${esc(PID)}</small>`:p.key[0]!=='~'?`<small>LS-${esc(p.key)}…</small>`:''}${mine?'<span class="you">你</span>':''}</span><span class="sc">¥${p.score}</span></div>`}).join('');
+  M.innerHTML=me?`你（${esc(playerName())} · ${PID}）目前排名 <b style="color:#ffcf3f">第 ${me.rank} 名</b> · 最佳月薪 ¥${me.score}`:
+   `你（${esc(playerName())}）还没上榜 · ${onlineBest()?`最佳 ¥${onlineBest()}`:'打满一个月（5 天）发薪后自动上榜'}`}
+ catch(e){L.innerHTML='<div class="bempty">📌 公告栏被风吹跑了……<br>（网络错误或服务暂时不可用，请稍后点“刷新”）</div>';M.textContent='离线中：工资照发，榜单稍后再看'}}
+$('#btnBoard1').onclick=()=>openBoard('start');$('#btnBoard2').onclick=()=>openBoard('payslip');
+$('#boardRefresh').onclick=()=>{SFX.click();loadBoard()};$('#boardClose').onclick=()=>{SFX.click();if(boardFrom==='payslip')show('payslip');else goStart()};
 /* ---------- 界面切换 ---------- */
-const SCREENS=['start','clockin','pause','otModal','payslip','shopScr','imgModal','ending'];
-function show(id){for(const s of SCREENS)$('#'+s).classList.toggle('hidden',s!==id&&!(id==='imgModal'&&s==='payslip'))}
+const SCREENS=['start','clockin','pause','otModal','payslip','shopScr','imgModal','ending','signup','boardScr'];
+function show(id){for(const s of SCREENS)$('#'+s).classList.toggle('hidden',s!==id&&!(id==='imgModal'&&s==='payslip')&&!(id==='boardScr'&&s===boardFrom))}
 function setGameUi(on){$('#hud').classList.toggle('hidden',!on);$('#controls').classList.toggle('hidden',!on);if(!on){$('#bossWarn').classList.add('hidden');$('#phone').classList.add('hidden');$('#chat').innerHTML=''}layout()}
 let toastT=0;function toast(t){const el=$('#toast');el.textContent=t;el.style.opacity=1;clearTimeout(toastT);toastT=setTimeout(()=>el.style.opacity=0,1600)}
 function refreshMute(){const t=SET.mute?'🔇':'🔊';$('#muteBtn1').textContent=t;$('#muteBtn2').textContent=`${t} 声音：${SET.mute?'关':'开'}`}
@@ -833,7 +1002,7 @@ function toggleMute(){SET.mute=!SET.mute;saveSet();if(SET.mute&&AC){AC.suspend()
 $('#muteBtn1').onclick=toggleMute;$('#muteBtn2').onclick=toggleMute;
 
 function goStart(){screen='start';G=null;setGameUi(false);show('start');
- $('#sRank').textContent=RANKS[S.rank].n;$('#sDay').textContent=S.day+1;$('#sMoney').textContent=fmt(S.money)}
+ refreshBadge();$('#sRank').textContent=RANKS[S.rank].n;$('#sDay').textContent=S.day+1;$('#sMoney').textContent=fmt(S.money)}
 
 /* ---------- 打卡 ---------- */
 let ciTimer=0,ciMin=0;
@@ -874,7 +1043,7 @@ function evalTitle(st){const tot=st.screws+st.stripped;const pr=tot?st.perfect/t
  if(st.maxCombo>=15)return{n:'连击狂魔',d:`最高 ${st.maxCombo} 连击，手速快过老板变脸`,k:'blue',b:'手速挺快，下个月单价……先不调了。'};
  if(st.screws<10)return{n:'带薪发呆艺术家',d:'今天的螺丝，主要靠意念拧',k:'gray',b:'你是来上班的还是来冥想的？'};
  return{n:'合格打工人',d:'平平无奇，按时下班，就是最大的胜利',k:'blue',b:'继续保持，公司的未来就靠你们了（我的未来靠公司）。'}}
-function buildSlip(st,payday,month,day,rankIdx,promo){const R=RANKS[rankIdx],u=R.unit;const inc=[],ded=[];
+function buildSlip(st,payday,month,day,rankIdx,promo,monthTotal){const R=RANKS[rankIdx],u=R.unit;const inc=[],ded=[];
  const I=(l,n,a)=>inc.push({l,n,a}),D=(l,n,a)=>ded.push({l,n,a});
  I('基本工资','日薪 · 老板说已经很高了',R.base);
  I('计件工资',`${st.pieces} 件 × ¥${fmt(u)}`,st.pieces*u);
@@ -899,8 +1068,8 @@ function buildSlip(st,payday,month,day,rankIdx,promo){const R=RANKS[rankIdx],u=R
  const net=inc.reduce((a,b)=>a+b.a,0)-ded.reduce((a,b)=>a+b.a,0);
  const T=evalTitle(st);let boss=T.b;if(st.otRefused)boss+=' 另外，昨晚群里@你怎么不回？';if(st.caught&&T.k!=='fish')boss+=' 还有，上班别玩手机。';
  const m=Math.ceil(day/5);
- return{title:payday?`第 ${m} 月 · 月底工资条`:'日结工资条',payday,day,rank:R.n,meta:[['姓名','打工人 No.9527'],['职级',R.n],['日期',`第 ${day} 天${payday?'（发薪日！）':''}`],['工位','3 号线 · 螺丝岗']],
-  inc,ded,net,T,boss,promo,grade:g[0]}}
+ return{title:payday?`第 ${m} 月 · 月底工资条`:'日结工资条',payday,day,rank:R.n,meta:[['姓名',playerName()],['工号',PID],['职级',R.n],['日期',`第 ${day} 天${payday?'（发薪日！）':''}`]],
+  inc,ded,net,T,boss,promo,grade:g[0],monthTotal:payday?(monthTotal!=null?monthTotal:(month.earned||0)+net):null}}
 function stampSvg(){const id='sp'+Math.random().toString(36).slice(2,7);return`<svg class="stamp" viewBox="0 0 100 100"><defs><path id="${id}" d="M50 50 m-36 0 a36 36 0 1 1 72 0 a36 36 0 1 1 -72 0"/></defs>
  <circle cx="50" cy="50" r="46" fill="none" stroke="#e0283f" stroke-width="4"/><text font-size="10.5" font-weight="900" fill="#e0283f" letter-spacing="1"><textPath href="#${id}" startOffset="2%">拧不完螺丝制品有限公司 · 财务</textPath></text>
  <polygon points="50,34 54.7,45 66,45.5 57,52.5 60.5,64 50,57 39.5,64 43,52.5 34,45.5 45.3,45" fill="#e0283f"/><text x="50" y="80" font-size="10" font-weight="900" fill="#e0283f" text-anchor="middle">财务专用章</text></svg>`}
@@ -913,6 +1082,7 @@ function slipHtml(s){const row=(r,neg)=>`<div class="row"><span class="l">${r.l}
  <div class="sec">应发</div>${s.inc.map(r=>row(r,false)).join('')}
  <div class="sec">扣款</div>${s.ded.map(r=>row(r,true)).join('')}
  <div class="net">${stampSvg()}<span class="l">实发工资</span><span class="a">${s.net<0?'-':''}¥${fmt(Math.abs(s.net))}</span></div>
+ ${s.payday?`<div class="mtotal"><span>本月实发合计（5 天）</span><span>¥${fmt(s.monthTotal)}</span></div><div class="slipboard" id="slipBoard">${DEMO?'（演示模式：不提交工资榜）':'准备上榜…'}</div>`:''}
  ${s.net<0?'<div class="wallet" style="color:#d6334f;font-weight:800">恭喜，今天倒欠公司钱了 🙃</div>':''}
  <div class="titlebadge">${medalSvg(s.T.k)}<div><small>今日称号</small><b>${s.T.n}</b><small>${s.T.d}</small></div></div>
  <div class="boss">老板批注：“${s.boss}”</div>
@@ -923,9 +1093,9 @@ function finishShift(){const st=G.stats;S.day++;const day=S.day,payday=day%5===0
  M.days++;if(st.late)M.late++;M.screws+=st.screws+st.stripped;M.perfect+=st.perfect;M.caught+=st.caught;M.stripped+=st.stripped;M.missed+=st.missed;if(st.ot)M.ot++;M.parts+=st.pieces;M.base+=G.R.base;M.fish+=st.fishTime;
  const good=st.perfect+st.ok;S.totalScrews+=good;S.totalPerfect+=st.perfect;S.totalParts+=st.pieces;
  const oldRank=S.rank;const nr=rankFor(S.totalScrews);let promo=null;if(nr>oldRank){S.rank=nr;promo=RANKS[nr].n}
- const slip=buildSlip(st,payday,M,day,oldRank,promo);S.money+=slip.net;S.totalEarned+=slip.net;S.bestDay=Math.max(S.bestDay,slip.net);M.earned+=slip.net;
+ const slip=buildSlip(st,payday,M,day,oldRank,promo);S.money+=slip.net;if(payday)slip.monthTotal=M.earned+slip.net;S.totalEarned+=slip.net;S.bestDay=Math.max(S.bestDay,slip.net);M.earned+=slip.net;
  S.history.push({d:day,net:Math.round(slip.net*100)/100,t:slip.T.n});if(S.history.length>40)S.history.shift();
- if(payday)S.month=defMonth();save();showSlip(slip);if(promo)setTimeout(()=>SFX.fanfare(),600)}
+ if(payday)S.month=defMonth();save();showSlip(slip);if(payday&&!DEMO)handleMonthSubmit(slip.monthTotal,$('#slipBoard'));if(promo)setTimeout(()=>SFX.fanfare(),600)}
 function showSlip(slip){curSlip=slip;screen='payslip';setGameUi(false);$('#slipBox').innerHTML=slipHtml(slip);show('payslip');$('#payslip').scrollTop=0;SFX.register()}
 $('#btnNext').onclick=()=>{SFX.click();if(S.rank===RANKS.length-1&&!S.endingSeen){showEnding();return}goClockIn()};
 $('#btnShop2').onclick=()=>openShop('payslip');$('#btnHome').onclick=()=>{SFX.click();goStart()};
@@ -944,7 +1114,7 @@ function slipPng(s){const Wd=750,pad=48,lh=64;const rows=s.inc.length+s.ded.leng
  x.textAlign='center';x.textBaseline='alphabetic';x.fillStyle='#8a8f9f';x.font=F(900,24);x.fillText('拧不完螺丝制品有限公司 · 一起打螺丝',Wd/2,90);
  x.fillStyle='#2b2d42';x.font=F(900,52);x.fillText(s.payday?'月 底 工 资 条':'工 资 条',Wd/2,156);
  let y=190;x.fillRect(pad,y,Wd-pad*2,4);y+=40;x.textAlign='left';x.font=F(500,24);
- s.meta.forEach((m,i)=>{const cx=pad+(i%2)*(Wd/2-pad)+6,cy=y+Math.floor(i/2)*36;x.font=F(900,24);x.fillText(m[0]+'：',cx,cy);const w=x.measureText(m[0]+'：').width;x.font=F(500,24);x.fillText(m[1],cx+w,cy)});
+ s.meta.forEach((m,i)=>{const cx=pad+(i%2)*(Wd/2-pad)+6,cy=y+Math.floor(i/2)*36;x.font=F(900,24);x.fillText(m[0]+'：',cx,cy);const w=x.measureText(m[0]+'：').width;x.font=F(500,24);let v=String(m[1]);while(x.measureText(v).width>Wd/2-pad-w-16&&v.length>1)v=v.slice(0,-2)+'…';x.fillText(v,cx+w,cy)});
  y+=62;x.setLineDash([8,6]);x.strokeStyle='#999';x.lineWidth=2;x.beginPath();x.moveTo(pad,y);x.lineTo(Wd-pad,y);x.stroke();x.setLineDash([]);y+=14;
  const sec=(t)=>{x.fillStyle='#2b2d42';rrect(x,pad,y,92,34,6);x.fill();x.fillStyle='#fff';x.font=F(900,22);x.textAlign='center';x.fillText(t,pad+46,y+25);x.textAlign='left';y+=46};
  const row=(r,neg)=>{x.fillStyle='#2b2d42';x.font=F(800,27);x.fillText(r.l,pad+6,y+24);x.fillStyle='#8a8f9f';x.font=F(400,19);let n=r.n;while(x.measureText(n).width>Wd-pad*2-220&&n.length>2)n=n.slice(0,-2)+'…';x.fillText(n,pad+6,y+50);
@@ -1021,7 +1191,7 @@ function loop(ts){const dt=Math.min(.05,(ts-lastT)/1000);lastT=ts;now=ts/1000;
  if(screen==='ending')drawEnding(now);
  requestAnimationFrame(loop)}
 addEventListener('resize',()=>{layout()});
-$('#btnStart').onclick=()=>{SFX.click();goClockIn()};
+$('#btnStart').onclick=()=>{SFX.click();if(!PNAME)openSignup(true);else goClockIn()};
 $('#btnReset').onclick=e=>{e.preventDefault();if(confirm('确定重置所有存档？（钱、职级、工具都会清零）')){S=defSave();save();goStart();toast('已重置，重新入职')}};
 document.addEventListener('contextmenu',e=>e.preventDefault());
 document.addEventListener('gesturestart',e=>e.preventDefault());
@@ -1032,6 +1202,7 @@ window.__dls={get G(){return G},get S(){return S},screen:()=>screen,
  holdMs:()=>{const z=zones();return(z.g0+z.g1)/2/fillRate()*1000},setTool,end:()=>{if(G)G.t=G.len},fish:toggleFish};
 function fakeStats(){const s=newStats(false);Object.assign(s,{pieces:38,perfectParts:21,screws:96,perfect:81,ok:15,stripped:3,bad:2,missed:2,missedPay:6,caught:1,gold:2,goldPay:12,urgent:3,urgentPay:4.5,otPieces:7,otPay:5.25,comboBonus:6,maxCombo:31,redpack:.01,praise:2,ot:true,fishTime:6});return s}
 function boot(){layout();refreshMute();goStart();requestAnimationFrame(loop);
+ if(!PNAME&&(!DEMO||DEMO==='signup'))openSignup(true);else if(DEMO==='signup')openSignup(false);else if(DEMO==='board')openBoard('start');else setTimeout(retryPending,1500);
  if(DEMO==='payslip'){const M=Object.assign(defMonth(),{days:5,late:0,screws:420,perfect:351,base:400});const st=fakeStats();const slip=buildSlip(st,true,M,5,1,'技术骨干');S.money=Math.max(S.money,1288);showSlip(slip)}
  else if(DEMO==='dayslip'){const st=fakeStats();st.late=true;st.ot=false;st.otRefused=true;const slip=buildSlip(st,false,defMonth(),3,0,null);showSlip(slip)}
  else if(DEMO==='shop'){S.money=Math.max(S.money,1888);S.up.drill=Math.max(S.up.drill,1);openShop('start')}
