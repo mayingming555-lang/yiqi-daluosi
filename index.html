@@ -761,6 +761,8 @@ function spawnPart(){const p=clamp(G.t/G.baseLen,0,1.2);const T=pick(PARTS);
  if(gold)addFloat(PS*.5,beltTop-PS*.5,'金色零件！×5','#ffcf3f',1.4,1.2)}
 function screwPos(p,s){return[p.x+s.rx*PS,partY()+s.ry*PS]}
 function screwR(){return PS*.072}
+/** 已发薪月数 → 产线提速倍率：每月 +14%，封顶 1.7 */
+function beltMonthMult(){return Math.min(1.7,1+Math.floor(S.day/5)*.14)}
 function envTop(){return Math.max(8,parseFloat(getComputedStyle(document.documentElement).getPropertyValue('env(safe-area-inset-top)'))||0)+84}
 function zones(){const m=[0,.05,.1][S.up.magnet];let g0=.6-m*.4,g1=.8+m*.6;if(G.energy<30){g0+=.03;g1-=.03}return{y0:.36,g0,g1}}
 function fillRate(){return .92*[1,1.25,1.5,1.8][S.up.drill]*(G.energy<=0?.7:1)}
@@ -841,10 +843,11 @@ function chat(from,text,red){const el=document.createElement('div');el.className
 function update(dt){if(!G||G.paused)return;const st=G.stats;
  if(G.ended){G.endT+=dt;updFx(dt);if(G.endT>1.6&&!G.slipShown){G.slipShown=true;finishShift()}return}
  G.t+=dt;const p=clamp(G.t/G.baseLen,0,1.15);
- const pp=Math.min(p,1),otk=(st.ot&&G.t>G.baseLen)?1.05:1;
- // v2 节奏：基础速度约为旧版 57%，整班最多加速到 1.3 倍
- const speed=Math.max(W/17.5,PS*.215)*lerp(1,1.3,pp)*otk;G.speed=speed;
- const interval=Math.max(lerp(4.2,3.0,pp),PS*1.15/speed);G.interval=interval;
+ // v3：班内速度基本恒定；每发一次月薪（每 5 天）永久提速约 14%，封顶 1.7×
+ const otk=(st.ot&&G.t>G.baseLen)?1.05:1;
+ const monthMult=beltMonthMult();G.monthMult=monthMult;
+ const speed=Math.max(W/17.5,PS*.215)*monthMult*otk;G.speed=speed;
+ const interval=Math.max(4.1,PS*1.15/speed);G.interval=interval;
  const last=G.parts[G.parts.length-1],roomOk=!last||last.x>-PS*.6+PS*1.15;
  G.spawnT-=dt;if(G.spawnT<=0&&roomOk&&G.t<G.len-2){spawnPart();G.spawnT=interval*rand(.9,1.15)}
  G.belt+=speed*dt;
@@ -1111,7 +1114,9 @@ function finishShift(){const st=G.stats;S.day++;const day=S.day,payday=day%5===0
  const oldRank=S.rank;const nr=rankFor(S.totalScrews);let promo=null;if(nr>oldRank){S.rank=nr;promo=RANKS[nr].n}
  const slip=buildSlip(st,payday,M,day,oldRank,promo);S.money+=slip.net;if(payday)slip.monthTotal=M.earned+slip.net;S.totalEarned+=slip.net;S.bestDay=Math.max(S.bestDay,slip.net);M.earned+=slip.net;
  S.history.push({d:day,net:Math.round(slip.net*100)/100,t:slip.T.n});if(S.history.length>40)S.history.shift();
- if(payday)S.month=defMonth();save();showSlip(slip);if(payday&&!DEMO)handleMonthSubmit(slip.monthTotal,$('#slipBoard'));if(promo)setTimeout(()=>SFX.fanfare(),600)}
+ if(payday)S.month=defMonth();save();showSlip(slip);if(payday&&!DEMO)handleMonthSubmit(slip.monthTotal,$('#slipBoard'));
+ if(payday){const next=beltMonthMult();setTimeout(()=>{toast(`下月产线提速 · ×${next.toFixed(2)}`);SFX.warn()},900)}
+ if(promo)setTimeout(()=>SFX.fanfare(),600)}
 function showSlip(slip){curSlip=slip;screen='payslip';setGameUi(false);$('#slipBox').innerHTML=slipHtml(slip);show('payslip');$('#payslip').scrollTop=0;SFX.register()}
 $('#btnNext').onclick=()=>{SFX.click();if(S.rank===RANKS.length-1&&!S.endingSeen){showEnding();return}goClockIn()};
 $('#btnShop2').onclick=()=>openShop('payslip');$('#btnHome').onclick=()=>{SFX.click();goStart()};
