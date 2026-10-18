@@ -381,6 +381,7 @@ const $=s=>document.querySelector(s);
 const Q=new URLSearchParams(location.search);
 const DEMO=Q.get('demo')||'';
 const FAST=Q.has('fast');
+const TOUCH_GAUGE=Q.has('touchGauge');
 const rand=(a,b)=>a+Math.random()*(b-a), ri=(a,b)=>Math.floor(rand(a,b+1)), pick=a=>a[Math.floor(Math.random()*a.length)];
 const clamp=(v,a,b)=>v<a?a:v>b?b:v, lerp=(a,b,t)=>a+(b-a)*t;
 const fmt=v=>(Math.round(v*100)/100).toFixed(2);
@@ -561,13 +562,20 @@ function drawScrew(c,x,y,r,sc,t,active){
  if(loose&&!active){const a=(Math.sin(t*6+x*.05)+1)/2;c.strokeStyle=`rgba(255,255,255,${.35+a*.45})`;c.lineWidth=2;c.setLineDash([4,4]);circ(c,x,y,r*1.55+a*2);c.stroke();c.setLineDash([])}
 }
 function star(c,x,y,R,r){c.beginPath();for(let i=0;i<8;i++){const a=i*Math.PI/4,rr=i%2?r:R;c.lineTo(x+Math.cos(a)*rr,y+Math.sin(a)*rr)}c.closePath();c.fill()}
-function drawGauge(c,x,y,r,prog,z,wrong){const R=Math.max(r*2.2,30),lw=Math.max(8,r*.55);const a0=-Math.PI/2;
+function gaugeSize(r){const R=Math.max(r*2.2,30),lw=Math.max(8,r*.55);return{R,lw}}
+function drawGauge(c,x,y,r,prog,z,wrong){const {R,lw}=gaugeSize(r);const a0=-Math.PI/2;
  c.lineCap='butt';c.lineWidth=lw+5;c.strokeStyle='rgba(20,24,40,.75)';c.beginPath();c.arc(x,y,R,0,TAU);c.stroke();
  const seg=(f,t,col)=>{c.strokeStyle=col;c.lineWidth=lw;c.beginPath();c.arc(x,y,R,a0+f*TAU,a0+t*TAU);c.stroke()};
  seg(0,z.y0,'#7d849b');seg(z.y0,z.g0,'#ffcf3f');seg(z.g0,z.g1,'#06d6a0');seg(z.g1,1,'#ef476f');
  c.strokeStyle='rgba(255,255,255,.85)';c.lineWidth=lw*.4;c.beginPath();c.arc(x,y,R,a0,a0+prog*TAU);c.stroke();
  const a=a0+prog*TAU;c.fillStyle='#fff';c.strokeStyle='#2b2d42';c.lineWidth=2;circ(c,x+Math.cos(a)*R,y+Math.sin(a)*R,lw*.62);c.fill();c.stroke();
  if(wrong){c.fillStyle='#ef476f';c.font=`900 ${Math.max(13,r*.9)}px ${FONT}`;c.textAlign='center';c.fillText('批头不对',x,y-R-lw)}}
+/** 触摸时圆环抬到拇指上方时，画一条细线连回螺丝 */
+function drawGaugeLink(c,gx,gy,sx,sy,r,below){const {R,lw}=gaugeSize(r);const tip=below?gy-R-2:gy+R+2;
+ c.save();c.strokeStyle='rgba(255,255,255,.85)';c.lineWidth=2;c.setLineDash([4,4]);c.beginPath();c.moveTo(gx,tip);c.lineTo(sx,sy-(below?-r*1.1:r*1.1));c.stroke();c.setLineDash([]);
+ c.fillStyle='rgba(43,45,66,.9)';c.beginPath();
+ if(below){c.moveTo(gx,tip-1);c.lineTo(gx-6,tip-10);c.lineTo(gx+6,tip-10)}else{c.moveTo(gx,tip+1);c.lineTo(gx-6,tip+10);c.lineTo(gx+6,tip+10)}
+ c.closePath();c.fill();c.strokeStyle='#fff';c.lineWidth=1.5;c.stroke();c.restore()}
 
 /* ---------- 吉祥物：戴安全帽的疲惫打工人 ---------- */
 function drawMascot(c,x,y,s,mood,t,full){c.save();c.translate(x,y);c.scale(s,s);
@@ -753,6 +761,7 @@ function spawnPart(){const p=clamp(G.t/G.baseLen,0,1.2);const T=pick(PARTS);
  if(gold)addFloat(PS*.5,beltTop-PS*.5,'金色零件！×5','#ffcf3f',1.4,1.2)}
 function screwPos(p,s){return[p.x+s.rx*PS,partY()+s.ry*PS]}
 function screwR(){return PS*.072}
+function envTop(){return Math.max(8,parseFloat(getComputedStyle(document.documentElement).getPropertyValue('env(safe-area-inset-top)'))||0)+84}
 function zones(){const m=[0,.05,.1][S.up.magnet];let g0=.6-m*.4,g1=.8+m*.6;if(G.energy<30){g0+=.03;g1-=.03}return{y0:.36,g0,g1}}
 function fillRate(){return .92*[1,1.25,1.5,1.8][S.up.drill]*(G.energy<=0?.7:1)}
 function bossWatching(){const b=G.boss;return b&&b.phase==='walk'&&b.x>-PS*.2&&b.x<W+PS*.2}
@@ -803,7 +812,9 @@ cv.addEventListener('pointerdown',e=>{if(screen!=='game'||!G||G.paused||G.ended)
  const ti=TOOLS.findIndex(t=>t.id===hit.sc.ty);let wrong=false;
  if(ti!==G.tool){if(S.up.auto)setTool(ti);else{wrong=true;SFX.wrong();flashTool(ti);const [x,y]=screwPos(hit.part,hit.sc);addFloat(x,y-PS*.28,`要用「${TOOLS[ti].n}」批头！`,'#ffb3c3',1)}}
  if(wrong)return;
- hit.sc.held=true;G.holds.set(e.pointerId,{part:hit.part,sc:hit.sc,wrong:false});try{cv.setPointerCapture(e.pointerId)}catch(_){}});
+ const isTouch=e.pointerType==='touch'||TOUCH_GAUGE;
+ hit.sc.held=true;G.holds.set(e.pointerId,{part:hit.part,sc:hit.sc,wrong:false,touch:isTouch,tx:e.clientX,ty:e.clientY});try{cv.setPointerCapture(e.pointerId)}catch(_){}});
+cv.addEventListener('pointermove',e=>{if(!G)return;const h=G.holds.get(e.pointerId);if(!h||!h.touch)return;h.tx=e.clientX;h.ty=e.clientY});
 function endPointer(e){if(!G)return;const h=G.holds.get(e.pointerId);if(h){G.holds.delete(e.pointerId);release(h,false)}}
 cv.addEventListener('pointerup',endPointer);cv.addEventListener('pointercancel',e=>{if(!G)return;const h=G.holds.get(e.pointerId);if(h){G.holds.delete(e.pointerId);release(h,true)}});
 addEventListener('keydown',e=>{if(screen!=='game'||!G)return;const k=e.key.toLowerCase();
@@ -902,7 +913,12 @@ function render(t){ctx.setTransform(DPR,0,0,DPR,0,0);
    const good=p.status==='good';ctx.strokeStyle=good?'#06b37f':'#e63958';ctx.fillStyle=good?'rgba(6,214,160,.15)':'rgba(239,71,111,.15)';ctx.lineWidth=4;rrect(ctx,-PS*.24,-PS*.1,PS*.48,PS*.2,8);ctx.fill();ctx.stroke();
    ctx.fillStyle=ctx.strokeStyle;ctx.font=`900 ${PS*.12}px ${FONT}`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(good?'合格':'次品',0,1);ctx.restore()}
   if(p.status==='missed'){ctx.fillStyle='rgba(239,71,111,.9)';ctx.font=`900 ${PS*.12}px ${FONT}`;ctx.textAlign='center';ctx.fillText('漏拧',p.x,y-PS*.45)}}
- for(const [k,h] of G.holds){const [x,y]=screwPos(h.part,h.sc);let pr=h.sc.prog;if(G.energy<30)pr=clamp(pr+Math.sin(t*30)*.015,0,1);drawGauge(ctx,x,y,sr,pr,zs,false)}
+ for(const [k,h] of G.holds){const [sx,sy]=screwPos(h.part,h.sc);let pr=h.sc.prog;if(G.energy<30)pr=clamp(pr+Math.sin(t*30)*.015,0,1);
+  if(h.touch){const {R,lw}=gaugeSize(sr);const pad=R+lw+8;const off=clamp(PS*.48,64,92);const topSafe=Math.max(100,envTop()+8);
+   let gx=clamp(sx,pad,W-pad),gy=sy-off,below=false;
+   if(gy-R-lw<topSafe){below=true;gy=sy+off;if(gy+R+lw>ctrlTop-8){below=false;gy=clamp(sy-off,topSafe+R+lw,H-pad)}}
+   drawGaugeLink(ctx,gx,gy,sx,sy,sr,below);drawGauge(ctx,gx,gy,sr,pr,zs,false)}
+  else drawGauge(ctx,sx,sy,sr,pr,zs,false)}
  for(const s of G.sparks){ctx.strokeStyle=s.col;ctx.globalAlpha=Math.min(1,s.life*3);ctx.lineWidth=2.5;ctx.beginPath();ctx.moveTo(s.x,s.y);ctx.lineTo(s.x-s.vx*.03,s.y-s.vy*.03);ctx.stroke()}ctx.globalAlpha=1;
  // 工位区
  const my=(beltBot+PS*.16+ctrlTop)/2,ms=clamp((ctrlTop-beltBot-PS*.16)*.24,18,44);
