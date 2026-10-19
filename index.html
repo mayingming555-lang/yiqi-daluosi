@@ -811,8 +811,8 @@ function spawnPart(){const p=clamp(G.t/G.baseLen,0,1.2);const T=pick(PARTS);
  if(gold)addFloat(PS*.5,beltTop-PS*.5,'金色零件！×5','#ffcf3f',1.4,1.2)}
 function screwPos(p,s){return[p.x+s.rx*PS,partY()+s.ry*PS]}
 function screwR(){return PS*.072}
-/** 每日产线提速：约 +2.8%/天，封顶 1.7（约第 26 天） */
-function beltDayMult(){return Math.min(1.7,1+S.day*.028)}
+/** 每日产线提速：+5%/天，封顶 2.5（第 31 天） */
+function beltDayMult(){return Math.min(2.5,1+S.day*.05)}
 function beltMonthMult(){return beltDayMult()} // 兼容旧测试钩子
 function envTop(){return Math.max(8,parseFloat(getComputedStyle(document.documentElement).getPropertyValue('env(safe-area-inset-top)'))||0)+84}
 function zones(){const m=[0,.05,.1][S.up.magnet];let g0=.6-m*.4,g1=.8+m*.6;if(G.energy<30){g0+=.03;g1-=.03}return{y0:.36,g0,g1}}
@@ -894,7 +894,7 @@ function chat(from,text,red){const el=document.createElement('div');el.className
 function update(dt){if(!G||G.paused)return;const st=G.stats;
  if(G.ended){G.endT+=dt;updFx(dt);if(G.endT>1.6&&!G.slipShown){G.slipShown=true;finishShift()}return}
  G.t+=dt;const p=clamp(G.t/G.baseLen,0,1.15);
- // v4：班内速度恒定；每过一天基线提速约 2.8%，封顶 1.7×
+ // v5：班内速度恒定；每过一天基线提速 5%，封顶 2.5×
  const otk=(st.ot&&G.t>G.baseLen)?1.05:1;
  const dayMult=beltDayMult();G.dayMult=dayMult;G.monthMult=dayMult;
  const speed=Math.max(W/17.5,PS*.215)*dayMult*otk;G.speed=speed;
