@@ -811,8 +811,9 @@ function spawnPart(){const p=clamp(G.t/G.baseLen,0,1.2);const T=pick(PARTS);
  if(gold)addFloat(PS*.5,beltTop-PS*.5,'金色零件！×5','#ffcf3f',1.4,1.2)}
 function screwPos(p,s){return[p.x+s.rx*PS,partY()+s.ry*PS]}
 function screwR(){return PS*.072}
-/** 已发薪月数 → 产线提速倍率：每月 +14%，封顶 1.7 */
-function beltMonthMult(){return Math.min(1.7,1+Math.floor(S.day/5)*.14)}
+/** 每日产线提速：约 +2.8%/天，封顶 1.7（约第 26 天） */
+function beltDayMult(){return Math.min(1.7,1+S.day*.028)}
+function beltMonthMult(){return beltDayMult()} // 兼容旧测试钩子
 function envTop(){return Math.max(8,parseFloat(getComputedStyle(document.documentElement).getPropertyValue('env(safe-area-inset-top)'))||0)+84}
 function zones(){const m=[0,.05,.1][S.up.magnet];let g0=.6-m*.4,g1=.8+m*.6;if(G.energy<30){g0+=.03;g1-=.03}return{y0:.36,g0,g1}}
 function fillRate(){return .92*[1,1.25,1.5,1.8][S.up.drill]*(G.energy<=0?.7:1)}
@@ -893,10 +894,10 @@ function chat(from,text,red){const el=document.createElement('div');el.className
 function update(dt){if(!G||G.paused)return;const st=G.stats;
  if(G.ended){G.endT+=dt;updFx(dt);if(G.endT>1.6&&!G.slipShown){G.slipShown=true;finishShift()}return}
  G.t+=dt;const p=clamp(G.t/G.baseLen,0,1.15);
- // v3：班内速度基本恒定；每发一次月薪（每 5 天）永久提速约 14%，封顶 1.7×
+ // v4：班内速度恒定；每过一天基线提速约 2.8%，封顶 1.7×
  const otk=(st.ot&&G.t>G.baseLen)?1.05:1;
- const monthMult=beltMonthMult();G.monthMult=monthMult;
- const speed=Math.max(W/17.5,PS*.215)*monthMult*otk;G.speed=speed;
+ const dayMult=beltDayMult();G.dayMult=dayMult;G.monthMult=dayMult;
+ const speed=Math.max(W/17.5,PS*.215)*dayMult*otk;G.speed=speed;
  const interval=Math.max(4.1,PS*1.15/speed);G.interval=interval;
  const last=G.parts[G.parts.length-1],roomOk=!last||last.x>-PS*.6+PS*1.15;
  G.spawnT-=dt;if(G.spawnT<=0&&roomOk&&G.t<G.len-2){spawnPart();G.spawnT=interval*rand(.9,1.15)}
@@ -1075,7 +1076,9 @@ function goStart(){screen='start';G=null;setGameUi(false);show('start');
 
 /* ---------- 打卡 ---------- */
 let ciTimer=0,ciMin=0;
-function goClockIn(){screen='clockin';setGameUi(false);show('clockin');ac();$('#ciDay').textContent=S.day+1;ciMin=7*60+51+ri(0,3);$('#ciMeeting').textContent=pick(MEETING);
+function goClockIn(){screen='clockin';setGameUi(false);show('clockin');ac();
+ if(S.day>0){const m=beltDayMult();setTimeout(()=>toast(`今日产线 ×${m.toFixed(2)}`),400)}
+ $('#ciDay').textContent=S.day+1;ciMin=7*60+51+ri(0,3);$('#ciMeeting').textContent=pick(MEETING);
  const upd=()=>{const el=$('#ciClock');el.textContent=`${String(Math.floor(ciMin/60)).padStart(2,'0')}:${String(ciMin%60).padStart(2,'0')}`;const late=ciMin>=8*60+1;el.classList.toggle('late',late);
   $('#ciHint').textContent=late?`已迟到 ${ciMin-480} 分钟！全勤奖岌岌可危`:`距离迟到还有 ${480-ciMin+1} 分钟（真·一分钟一秒）`};
  upd();clearInterval(ciTimer);ciTimer=setInterval(()=>{ciMin++;upd();SFX.tick(.2)},900)}
@@ -1168,8 +1171,7 @@ function finishShift(){const st=G.stats;S.day++;const day=S.day,payday=day%5===0
  const slip=buildSlip(st,payday,M,day,oldRank,promo);S.money+=slip.net;if(payday)slip.monthTotal=M.earned+slip.net;S.totalEarned+=slip.net;S.bestDay=Math.max(S.bestDay,slip.net);M.earned+=slip.net;
  S.history.push({d:day,net:Math.round(slip.net*100)/100,t:slip.T.n});if(S.history.length>40)S.history.shift();
  if(payday)S.month=defMonth();save();showSlip(slip);if(payday&&!DEMO)handleMonthSubmit(slip.monthTotal,$('#slipBoard'));
- if(payday){const next=beltMonthMult();setTimeout(()=>{toast(`下月产线提速 · ×${next.toFixed(2)}`);SFX.warn()},900);
-  if(shouldTriggerIpo())pendingIpo=true}
+ if(payday){if(shouldTriggerIpo())pendingIpo=true}
  if(promo)setTimeout(()=>SFX.fanfare(),600)}
 function showSlip(slip){curSlip=slip;screen='payslip';setGameUi(false);$('#slipBox').innerHTML=slipHtml(slip);show('payslip');$('#payslip').scrollTop=0;SFX.register()}
 $('#btnNext').onclick=()=>{SFX.click();if(pendingIpo){pendingIpo=false;showIpo();return}if(S.rank===RANKS.length-1&&!S.endingSeen){showEnding();return}goClockIn()};
