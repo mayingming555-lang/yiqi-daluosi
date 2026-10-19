@@ -257,6 +257,20 @@ background-image:linear-gradient(rgba(0,0,0,.025) 1px,transparent 1px);backgroun
 #ipoPunch .cash{font-size:28px;font-weight:900;color:#ffcf3f;font-family:"DejaVu Sans Mono",Menlo,monospace}
 #ipoPunch .warn{color:#ff8fab;font-weight:800}
 
+
+.btabs{display:flex;gap:6px;justify-content:center;margin:6px 0 8px;flex-wrap:wrap}
+.btab{padding:6px 12px;border-radius:999px;background:rgba(43,45,66,.15);font-weight:900;font-size:13px;color:#3d220b;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
+.btab.on{background:linear-gradient(#ffe08a,#ffb02e);color:#5a2d00;box-shadow:0 3px 0 #d08a00}
+.achbox{background:#fff8ea;border-radius:22px;max-width:480px;width:100%;padding:14px;box-shadow:0 16px 40px rgba(0,0,0,.35);animation:pop .3s cubic-bezier(.3,1.6,.6,1);max-height:86vh;overflow:auto}
+.achbox h2{margin:0;text-align:center}.achbox .prog{text-align:center;font-weight:800;margin:6px 0 10px;color:#0a7d55}
+.ach{display:flex;gap:10px;align-items:flex-start;background:#fff;border-radius:14px;padding:9px;margin-bottom:8px;box-shadow:0 3px 0 #f0dcb0;opacity:.55;filter:grayscale(.5)}
+.ach.on{opacity:1;filter:none;background:linear-gradient(#fff,#fff8e0)}
+.ach .ai{font-size:28px;width:42px;text-align:center;line-height:42px}
+.ach .atx{flex:1;min-width:0}.ach .atx b{font-size:15px}.ach .got{margin-left:6px;background:#06c08f;color:#fff;font-size:11px;padding:1px 6px;border-radius:6px;font-weight:900}
+.ach .atx p{margin:2px 0;font-size:12.5px;color:#666}.ach .atx small{color:#999;font-size:11.5px}
+.item .roi{display:inline-block;margin-top:3px;font-size:11.5px;font-weight:800;color:#0a7d55;background:#e6fff5;padding:1px 7px;border-radius:6px}
+.howto.short li{margin:.2em 0}
+
 </style>
 </head>
 <body>
@@ -298,17 +312,16 @@ background-image:linear-gradient(rgba(0,0,0,.025) 1px,transparent 1px);backgroun
  <canvas id="mascotCv"></canvas>
  <div class="startCard">
   <div class="statline"><span id="sRank">普工</span><span>第 <b id="sDay">1</b> 天</span><span>余额 ¥<b id="sMoney">0</b></span></div>
-  <ol class="howto">
-   <li><b>按住</b>螺丝开拧，圆环指针走到<b style="color:#06a47a">绿区</b>松手 = 拧到位！</li>
-   <li>太早松手=没拧紧，拧过头=<b style="color:#d6334f">滑丝</b>扣钱。批头要对上螺丝（十字/一字/六角）。</li>
-   <li>零件出画面前拧完=计件工资；漏了=质检投诉扣钱。</li>
-   <li>累了可以<b>摸鱼</b>回精力……但<b>老板巡视</b>时被抓要扣钱。每 5 天发一次“月底”工资。</li>
+  <ol class="howto short" id="howto">
+   <li><b>按住</b>螺丝，圆环走到<b style="color:#06a47a">绿区</b>松手 = 拧到位！</li>
+   <li>零件离开前拧完才有计件工资。别的花活，上班后会慢慢教你～</li>
   </ol>
  </div>
  <div class="btnrow">
   <button class="btn" id="btnStart">▶ 开始上班</button>
   <button class="btn blue" id="btnShop1">🛒 小卖部</button>
-  <button class="btn red" id="btnBoard1">🏆 工资榜</button>
+  <button class="btn red" id="btnBoard1">🏆 光荣榜</button>
+  <button class="btn gray" id="btnAch1">🏅 成就</button>
  </div>
  <div class="foot">纯属虚构 · 如有雷同，那你也在打螺丝 · <a href="#" id="btnReset" style="color:inherit">重置存档</a></div>
 </div>
@@ -343,9 +356,10 @@ background-image:linear-gradient(rgba(0,0,0,.025) 1px,transparent 1px);backgroun
 <div id="payslip" class="screen dim hidden"><div id="slipBox"></div>
  <div class="slipBtns">
   <button class="btn blue small" id="btnSaveSlip">📷 保存工资条</button>
+  <button class="btn small" id="btnShare" style="background:linear-gradient(#ffd0e0,#ff8fab);color:#5a0626;box-shadow:0 5px 0 #c2406a,0 8px 16px rgba(0,0,0,.2),inset 0 2px 0 rgba(255,255,255,.5)">📣 打工战报</button>
   <button class="btn green small" id="btnNext">明天继续打螺丝 ▶</button>
   <button class="btn small" id="btnShop2">🛒 小卖部</button>
-  <button class="btn red small" id="btnBoard2">🏆 工资榜</button>
+  <button class="btn red small" id="btnBoard2">🏆 光荣榜</button>
   <button class="btn gray small" id="btnHome">首页</button>
  </div></div>
 
@@ -387,7 +401,9 @@ background-image:linear-gradient(rgba(0,0,0,.025) 1px,transparent 1px);backgroun
 </div>
 
 <div id="boardScr" class="screen dim hidden"><div class="board">
- <div class="bhead">本厂月薪光荣榜</div><div class="bsub">按单月实发工资排名 · 每位员工只计最高一个月 · 前 20 名</div>
+ <div class="bhead" id="boardHead">本厂月薪光荣榜</div>
+ <div class="btabs"><button class="btab on" data-tab="pay">月薪</button><button class="btab" data-tab="parts">今日件数</button><button class="btab" data-tab="combo">连击</button></div>
+ <div class="bsub" id="boardSub">按单月实发工资排名 · 每位员工只计最高一个月 · 前 20 名</div>
  <div class="paper" id="boardList"></div>
  <div class="me" id="boardMe">……</div>
  <div class="btnrow"><button class="btn small blue" id="boardRefresh">↻ 刷新</button><button class="btn small gray" id="boardClose">返回</button></div>
@@ -405,6 +421,12 @@ background-image:linear-gradient(rgba(0,0,0,.025) 1px,transparent 1px);backgroun
  </div>
 </div>
 
+
+<div id="achScr" class="screen dim hidden"><div class="achbox">
+ <h2>🏅 打工成就</h2><div class="prog" id="achProg">已解锁 0/8</div>
+ <div id="achList"></div>
+ <div class="btnrow"><button class="btn gray" id="achClose">返回</button></div>
+</div></div>
 <div id="toast"></div>
 <script>
 'use strict';
@@ -423,10 +445,10 @@ const TAU=Math.PI*2;
 const SAVE_KEY='dls_save', SET_KEY='dls_settings';
 function defMonth(){return{days:0,late:0,earned:0,screws:0,perfect:0,caught:0,stripped:0,missed:0,ot:0,parts:0,base:0,fish:0}}
 function defSave(){return{v:1,money:0,day:0,totalScrews:0,totalPerfect:0,totalParts:0,totalEarned:0,rank:0,
- up:{drill:0,magnet:0,auto:0,wrist:0,radar:0},tea:1,opt:{shares:0,packs:{a:0,b:0,c:0},lastIpoDay:0,ipoCount:0,cash:0},month:defMonth(),bestDay:0,endingSeen:false,history:[]}}
+ up:{drill:0,magnet:0,auto:0,wrist:0,radar:0},tea:1,opt:{shares:0,packs:{a:0,b:0,c:0},lastIpoDay:0,ipoCount:0,cash:0},ach:{},bestParts:0,bestCombo:0,month:defMonth(),bestDay:0,endingSeen:false,history:[],tipsSeen:{}}}
 if(Q.has('reset')){try{localStorage.removeItem(SAVE_KEY)}catch(e){}}
 function loadSave(){try{const o=JSON.parse(localStorage.getItem(SAVE_KEY)||'null');if(o&&o.v===1){const d=defSave();
- return Object.assign(d,o,{up:Object.assign(d.up,o.up||{}),opt:Object.assign(d.opt,o.opt||{},{packs:Object.assign(d.opt.packs,(o.opt&&o.opt.packs)||{})}),month:Object.assign(defMonth(),o.month||{})})}}catch(e){}return defSave()}
+ return Object.assign(d,o,{up:Object.assign(d.up,o.up||{}),opt:Object.assign(d.opt,o.opt||{},{packs:Object.assign(d.opt.packs,(o.opt&&o.opt.packs)||{})}),ach:Object.assign({},d.ach,o.ach||{}),tipsSeen:Object.assign({},d.tipsSeen,o.tipsSeen||{}),month:Object.assign(defMonth(),o.month||{})})}}catch(e){}return defSave()}
 let S=loadSave();
 function save(){try{localStorage.setItem(SAVE_KEY,JSON.stringify(S))}catch(e){}}
 let SET=(()=>{try{return Object.assign({mute:false},JSON.parse(localStorage.getItem(SET_KEY)||'{}'))}catch(e){return{mute:false}}})();
@@ -446,12 +468,12 @@ function rankFor(screws){let r=0;for(let i=0;i<RANKS.length;i++)if(screws>=RANKS
 
 /* ---------- 小卖部 ---------- */
 const SHOP=[
- {id:'drill',n:'电动螺丝刀',max:3,price:[180,450,900],desc:['拧得更快 +25%，手不酸了','拧得更快 +50%，嗡嗡嗡','拧得飞快 +80%（终于告别手动时代）']},
- {id:'magnet',n:'磁吸批头',max:2,price:[150,420],desc:['绿区变宽，螺丝自己往上吸','绿区再宽一点，闭着眼都能拧']},
- {id:'auto',n:'自动换头器',max:1,price:[520],desc:['按住螺丝自动切换正确批头，再也不用手忙脚乱']},
- {id:'wrist',n:'护腕',max:2,price:[120,320],desc:['精力消耗 -30%','精力消耗 -55%，腱鞘炎退散']},
- {id:'radar',n:'老板雷达',max:1,price:[350],desc:['老板提前 5 秒预警，并在屏幕上标出位置（摸鱼刚需）']},
- {id:'tea',n:'奶茶',tea:true,price:18,desc:'上班时喝一杯：精力 +50，心情原地复活（全糖）'},
+ {id:'drill',n:'电动螺丝刀',max:3,price:[180,450,900],roi:['⭐建议优先 · 约 +25%拧速','约 +50%拧速','约 +80%拧速'],desc:['拧得更快 +25%，手不酸了','拧得更快 +50%，嗡嗡嗡','拧得飞快 +80%（终于告别手动时代）']},
+ {id:'magnet',n:'磁吸批头',max:2,price:[150,420],roi:['绿区更宽 · 容错↑','绿区再宽 · 闭眼也能拧'],desc:['绿区变宽，螺丝自己往上吸','绿区再宽一点，闭着眼都能拧']},
+ {id:'auto',n:'自动换头器',max:1,price:[520],roi:['省心 · 批头自动对'],desc:['按住螺丝自动切换正确批头，再也不用手忙脚乱']},
+ {id:'wrist',n:'护腕',max:2,price:[120,320],roi:['精力更耐造 · 约 -30%消耗','约 -55%精力消耗'],desc:['精力消耗 -30%','精力消耗 -55%，腱鞘炎退散']},
+ {id:'radar',n:'老板雷达',max:1,price:[350],roi:['摸鱼刚需 · 提前 5 秒预警'],desc:['老板提前 5 秒预警，并在屏幕上标出位置（摸鱼刚需）']},
+ {id:'tea',n:'奶茶',tea:true,price:18,roi:'急救 · 精力 +50',desc:'上班时喝一杯：精力 +50，心情原地复活（全糖）'},
 ];
 /* 员工期权包：线长解锁；份额单位为公司股权百分比 */
 const OPT_UNLOCK_RANK=3; // 线长
@@ -501,16 +523,21 @@ function noise(d,vol=.2,freq=2000,when=0,q=1,type='bandpass'){const a=ac();if(!a
  const t=a.currentTime+when,s=a.createBufferSource(),f=a.createBiquadFilter(),g=a.createGain();s.buffer=NB;f.type=type;f.frequency.value=freq;f.Q.value=q;g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.0001,t+d);s.connect(f);f.connect(g);g.connect(MASTER);s.start(t);s.stop(t+d+.02)}
 const SFX={
  tick(p){noise(.025,.12,2500+p*3000,0,4)},
- ding(c){const b=1320*Math.pow(1.06,Math.min(c||0,12));tone(b,.35,'sine',.22);tone(b*2,.25,'sine',.06,.01);tone(b*1.5,.3,'triangle',.05,.04)},
+ ding(c){const n=c||0;const b=1320*Math.pow(1.06,Math.min(n,16));tone(b,.32,'sine',.24);tone(b*2,.22,'sine',.07,.01);tone(b*1.5,.28,'triangle',.06,.04);
+  if(n>0&&n%10===0){tone(523,.12,'triangle',.12,.08);tone(784,.14,'triangle',.14,.18);tone(1046,.28,'sine',.16,.3);noise(.12,.15,5000,.2,1)}
+  if(n>=50){tone(1318,.35,'sine',.16,.35);tone(1568,.45,'triangle',.12,.5)}},
+ perfect(){tone(988,.12,'sine',.18);tone(1318,.22,'triangle',.14,.08);tone(1760,.18,'sine',.08,.16)},
  ok(){tone(880,.15,'triangle',.15)},
- loose(){tone(400,.18,'triangle',.15,0,-200)},
- strip(){noise(.3,.4,900,0,1);tone(220,.3,'sawtooth',.12,0,-150);noise(.08,.3,4000,.02,2)},
+ loose(){tone(360,.2,'triangle',.16,0,-180);tone(280,.15,'sine',.08,.08)},
+ strip(){noise(.28,.42,850,0,1);tone(200,.32,'sawtooth',.14,0,-160);noise(.1,.28,4200,.03,2);tone(140,.2,'square',.06,.12)},
  wrong(){tone(300,.08,'square',.08);tone(250,.1,'square',.08,.08)},
  coin(){tone(1046,.08,'square',.06);tone(1568,.18,'square',.06,.07)},
  partDone(){tone(784,.1,'triangle',.14);tone(1046,.1,'triangle',.14,.08);tone(1318,.2,'triangle',.14,.16)},
  bad(){tone(196,.25,'square',.09);tone(147,.35,'square',.09,.18)},
+ miss(){tone(180,.2,'triangle',.12);tone(140,.28,'sine',.1,.12, -40);noise(.15,.18,600,.05,1)},
  step(){tone(70,.1,'sine',.35);noise(.05,.15,300,0,1)},
- warn(){tone(988,.12,'square',.07);tone(784,.12,'square',.07,.14)},
+ warn(){tone(880,.1,'square',.09);tone(660,.12,'square',.09,.12);tone(990,.16,'sawtooth',.07,.26);noise(.08,.12,1800,.1,2)},
+ bossNear(){tone(220,.15,'sine',.2);tone(330,.12,'triangle',.12,.1);tone(180,.25,'sine',.15,.22);for(let i=0;i<2;i++)tone(880,.06,'square',.05,.4+i*.18)},
  msg(){tone(1175,.09,'sine',.16);tone(1568,.16,'sine',.14,.1)},
  stamp(){noise(.15,.5,250,0,.8);tone(90,.18,'sine',.3)},
  caught(){tone(523,.12,'sawtooth',.12);tone(415,.12,'sawtooth',.12,.12);tone(330,.4,'sawtooth',.12,.24)},
@@ -518,8 +545,10 @@ const SFX={
  slurp(){noise(.4,.25,600,0,3);tone(300,.3,'sine',.1,.1,200)},
  register(){tone(1568,.1,'square',.07);tone(2093,.1,'square',.07,.1);noise(.3,.2,6000,.2,1);tone(2637,.4,'sine',.1,.25)},
  fanfare(){[523,659,784,1046].forEach((f,i)=>tone(f,.3,'triangle',.14,i*.12));tone(1318,.6,'triangle',.14,.5)},
+ ach(){tone(587,.12,'triangle',.14);tone(740,.12,'triangle',.14,.1);tone(880,.14,'triangle',.14,.2);tone(1175,.35,'sine',.16,.32)},
  bell(){tone(660,.6,'sine',.2);tone(880,.8,'sine',.15,.3);tone(660,1,'sine',.12,.6)},
  click(){tone(600,.05,'triangle',.1)},
+ share(){tone(784,.1,'sine',.12);tone(988,.15,'triangle',.12,.08);noise(.08,.1,4000,.12,1)},
 };
 /* ---------- 绘图工具 ---------- */
 function rrect(c,x,y,w,h,r){r=Math.min(r,w/2,h/2);c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath()}
@@ -540,6 +569,9 @@ const PARTS=[
  {id:'case',n:'手机壳',slots:[[.11,-.3],[-.11,.31],[.11,.31],[0,.03]],draw:drawCase},
  {id:'lamp',n:'小台灯',slots:[[-.17,.36],[.17,.36],[0,-.02],[.2,-.27]],draw:drawLamp},
  {id:'robot',n:'机器人',slots:[[-.27,-.26],[.27,-.26],[-.27,.16],[.27,.16]],draw:drawRobot},
+ {id:'watch',n:'智能手表',slots:[[-.22,-.18],[.22,-.18],[0,.28]],draw:drawWatch},
+ {id:'radio',n:'小收音机',slots:[[-.32,-.22],[.32,-.22],[-.32,.24],[.32,.24]],draw:drawRadio},
+ {id:'drone',n:'小无人机',slots:[[-.36,-.28],[.36,-.28],[-.36,.28],[.36,.28]],draw:drawDrone},
 ];
 function drawBoard(c,s,p,t){const g=p.gold;const w=s*.92,h=s*.72;
  gloss(c,-w/2,-h/2,w,h,s*.06,g?GOLD.a:'#5fd68c',g?GOLD.b:'#1f8a4c',g?GOLD.s:'#145c33',s*.02);
@@ -589,12 +621,38 @@ function drawRobot(c,s,p,t){const g=p.gold,w=s*.74,h=s*.62;const good=p.status==
  else{const bl=(Math.sin(t*3+p.id)>0.95)?.2:1;c.save();c.translate(0,-s*.07);c.scale(1,bl);c.fillRect(-s*.13,-s*.03,s*.06,s*.06);c.fillRect(s*.07,-s*.03,s*.06,s*.06);c.restore();c.fillRect(-s*.05,s*.03,s*.1,s*.015)}
  c.fillStyle='#ffb3c1';circ(c,-w*.4,s*.08,s*.03);c.fill();circ(c,w*.4,s*.08,s*.03);c.fill()}
 
+
+function drawWatch(c,s,p,t){const g=p.gold,w=s*.55,h=s*.7;
+ gloss(c,-w*.35,-h*.55,w*.7,h*.35,s*.08,g?GOLD.a:'#9aa3b5',g?GOLD.b:'#5d6880',g?GOLD.s:'#3a4060',s*.015);
+ gloss(c,-w/2,-h*.22,w,h*.55,s*.16,g?GOLD.a:'#4ecdc4',g?GOLD.b:'#1a9b8e',g?GOLD.s:'#0d5c55',s*.02);
+ gloss(c,-w*.38,-h*.12,w*.76,h*.32,s*.1,'#1d2030','#0a0c14');
+ c.fillStyle=p.status==='good'?'#7dffb2':'#5eead4';c.font=`900 ${s*.1}px ${FONT}`;c.textAlign='center';c.textBaseline='middle';
+ c.fillText(p.status==='good'?'12:00':'--:--',0,s*.02);
+ gloss(c,-w*.35,h*.28,w*.7,h*.28,s*.08,g?GOLD.a:'#9aa3b5',g?GOLD.b:'#5d6880',g?GOLD.s:'#3a4060',s*.015);
+ if(p.status==='good'){c.strokeStyle='rgba(125,255,178,.5)';c.lineWidth=s*.02;circ(c,0,0,w*.55);c.stroke()}}
+function drawRadio(c,s,p,t){const g=p.gold,w=s*.88,h=s*.62;
+ gloss(c,-w/2,-h/2,w,h,s*.1,g?GOLD.a:'#ffb4a2',g?GOLD.b:'#e76f51',g?GOLD.s:'#9b2226',s*.02);
+ c.fillStyle='#2b2d42';c.fillRect(-w*.38,-h*.28,w*.35,h*.2);c.fillStyle='#7dffb2';
+ for(let i=0;i<4;i++){const bar=.3+(.5+Math.sin(t*6+i)*.5)*.7;c.fillRect(-w*.35+i*w*.08,-h*.22,w*.05,h*.12*bar)}
+ gloss(c,w*.12,-h*.22,w*.28,w*.28,s*.14,g?GOLD.a:'#fff',g?GOLD.b:'#cfd3df','#8d97ab',s*.015);
+ c.fillStyle='#ef476f';circ(c,w*.26,-h*.08,s*.035);c.fill();
+ c.strokeStyle='#5d6880';c.lineWidth=s*.03;c.beginPath();c.moveTo(-w*.2,-h*.5);c.lineTo(-w*.05,-h*.72);c.stroke();
+ c.fillStyle='#ffd966';circ(c,-w*.05,-h*.72,s*.04);c.fill();
+ if(p.status==='good'){c.fillStyle='rgba(255,255,255,.5)';c.font=`900 ${s*.08}px ${FONT}`;c.textAlign='center';c.fillText('♪',w*.26,h*.22)}}
+function drawDrone(c,s,p,t){const g=p.gold;const spin=p.status==='good'?t*14:t*2;
+ for(const [sx,sy] of[[-.34,-.3],[.34,-.3],[-.34,.3],[.34,.3]]){c.save();c.translate(sx*s,sy*s);c.rotate(spin);
+  c.fillStyle=g?GOLD.b:'#8d97ab';c.fillRect(-s*.16,-s*.02,s*.32,s*.04);c.fillRect(-s*.02,-s*.16,s*.04,s*.32);c.restore();
+  c.fillStyle='#2b2d42';circ(c,sx*s,sy*s,s*.05);c.fill()}
+ gloss(c,-s*.22,-s*.14,s*.44,s*.28,s*.08,g?GOLD.a:'#a8dadc',g?GOLD.b:'#457b9d',g?GOLD.s:'#1d3557',s*.02);
+ c.fillStyle='#e63946';circ(c,0,0,s*.06);c.fill();c.fillStyle='#fff';circ(c,s*.02,-s*.02,s*.02);c.fill();
+ c.strokeStyle='#1d3557';c.lineWidth=s*.025;c.beginPath();c.moveTo(-s*.1,s*.14);c.lineTo(0,s*.28);c.lineTo(s*.1,s*.14);c.stroke()}
+
 /* ---------- 螺丝 ---------- */
 const SCREW_COL={cross:['#ffffff','#8d97ab','#4a5266'],slot:['#fff3c4','#c8922a','#6b4a0e'],hex:['#e3edff','#5776b8','#24365e']};
 function drawScrew(c,x,y,r,sc,t,active){
  c.fillStyle='rgba(20,20,30,.55)';circ(c,x,y+r*.12,r*1.02);c.fill();
  const loose=sc.state==='loose';const lift=loose?r*.7*(1-sc.prog*.9):0;
- const col=SCREW_COL[sc.ty];
+ let col=SCREW_COL[sc.ty];if(sc.rusty)col=['#e8c4a0','#8a5a2a','#4a2e10'];
  if(loose){c.fillStyle='rgba(0,0,0,.25)';c.beginPath();c.ellipse(x+r*.25,y+r*.25,r*.95,r*.6,0,0,TAU);c.fill();
   if(lift>1){c.fillStyle=vgrad(c,y-lift,y,'#c9ced9','#6e7587');c.fillRect(x-r*.38,y-lift,r*.76,lift);c.strokeStyle='rgba(60,60,70,.6)';c.lineWidth=1;c.beginPath();for(let k=y-lift+2;k<y;k+=3){c.moveTo(x-r*.38,k);c.lineTo(x+r*.38,k+1.5)}c.stroke()}}
  const hy=y-lift;c.save();c.translate(x,hy);
@@ -606,6 +664,7 @@ function drawScrew(c,x,y,r,sc,t,active){
  else if(sc.ty==='slot'){c.fillRect(-r*.7,-r*.14,r*1.4,r*.28)}
  else{c.beginPath();for(let i=0;i<6;i++){const a=i*TAU/6;c.lineTo(Math.cos(a)*r*.38,Math.sin(a)*r*.38)}c.closePath();c.fill()}
  c.rotate(-sc.angle);hl(c,-r*.35,-r*.4,r*.35,r*.18,.7);
+ if(sc.rusty){c.fillStyle='rgba(90,50,20,.55)';for(let i=0;i<5;i++){const a=i*1.3;circ(c,Math.cos(a)*r*.45,Math.sin(a)*r*.4,r*.08);c.fill()}}
  if(sc.state==='stripped'){c.strokeStyle='#ff3355';c.lineWidth=r*.22;c.lineCap='round';c.beginPath();c.moveTo(-r*.5,-r*.5);c.lineTo(r*.5,r*.5);c.moveTo(r*.5,-r*.5);c.lineTo(-r*.5,r*.5);c.stroke()}
  c.restore();
  if(sc.state==='perfect'){const a=(Math.sin(t*4+sc.angle)+1)/2;c.save();c.translate(x+r*.6,hy-r*.6);c.rotate(t);c.fillStyle=`rgba(255,255,255,${.5+a*.5})`;star(c,0,0,r*.45,r*.12);c.restore()}
@@ -794,7 +853,7 @@ function newShift(late){const R=RANKS[S.rank];const baseLen=FAST?28:75;
  if(S.day<1&&!DEMO)plan=plan.slice(1);
  G={t:0,baseLen,len:baseLen,parts:[],spawnT:.6,belt:0,energy:100,combo:0,tool:0,holds:new Map(),fish:false,fishT:0,
   boss:null,bossPlan:plan,lead,floats:[],sparks:[],shake:0,paused:false,ended:false,endT:0,R,
-  otAt:(DEMO==='ot'?3:baseLen*.6),otAsked:!(S.day===0||Math.random()<.65||DEMO==='ot'),otShown:false,
+  otAt:(DEMO==='ot'?3:baseLen*.6),otAsked:!(DEMO==='ot')&&(S.day===0||Math.random()<.65),otShown:false,
   chats:[[baseLen*.12,'chat'],[baseLen*.4,'red'],[baseLen*.75,'chat']].concat(DEMO==='play'?[[1.5,'chat']]:[]),
   stats:newStats(late),id:0,mood:'tired',moodT:0,lastPay:0,wrongT:0};
  setTool(0);updateHud()}
@@ -805,20 +864,22 @@ function spawnPart(){const p=clamp(G.t/G.baseLen,0,1.2);const T=pick(PARTS);
  const urgent0=G.t>G.baseLen*.25&&Math.random()<.09;if(urgent0)n=Math.min(n,S.day<2?2:3);n=Math.min(n,T.slots.length);
  const slots=T.slots.slice().sort(()=>Math.random()-.5).slice(0,n);const types=allowedTypes();const main=pick(types);
  const gold=!urgent0&&G.t>6&&Math.random()<.06,urgent=urgent0;
- const part={T,x:-PS*.6,id:++G.id,gold,urgent,mult:urgent?1.2:1,status:'open',stampT:0,screws:slots.map(s=>({rx:s[0],ry:s[1],ty:Math.random()<.78?main:pick(types),state:'loose',prog:0,angle:rand(0,TAU),held:false,tickAcc:0}))};
+ const part={T,x:-PS*.6,id:++G.id,gold,urgent,mult:urgent?1.2:1,status:'open',stampT:0,screws:slots.map(s=>{const rusty=S.day>=2&&Math.random()<(S.day<5?.08:.14);return{rx:s[0],ry:s[1],ty:Math.random()<.78?main:pick(types),state:'loose',prog:0,angle:rand(0,TAU),held:false,tickAcc:0,rusty}})};
  G.parts.push(part);
  if(urgent){SFX.siren();addFloat(PS*.5,beltTop-PS*.5,'加急单！走得更快，做完 ×2','#ff4d6d',1.4,1.2)}
- if(gold)addFloat(PS*.5,beltTop-PS*.5,'金色零件！×5','#ffcf3f',1.4,1.2)}
+ if(gold)addFloat(PS*.5,beltTop-PS*.5,'金色零件！×5','#ffcf3f',1.4,1.2);
+ if(part.screws.some(x=>x.rusty))addFloat(PS*.55,beltTop-PS*.25,'有生锈螺丝，多拧一会儿','#c8922a',1.2)}
 function screwPos(p,s){return[p.x+s.rx*PS,partY()+s.ry*PS]}
 function screwR(){return PS*.072}
 /** 每日产线提速：+5%/天，封顶 2.5（第 31 天） */
 function beltDayMult(){return Math.min(2.5,1+S.day*.05)}
 function beltMonthMult(){return beltDayMult()} // 兼容旧测试钩子
 function envTop(){return Math.max(8,parseFloat(getComputedStyle(document.documentElement).getPropertyValue('env(safe-area-inset-top)'))||0)+84}
-function zones(){const m=[0,.05,.1][S.up.magnet];let g0=.6-m*.4,g1=.8+m*.6;if(G.energy<30){g0+=.03;g1-=.03}return{y0:.36,g0,g1}}
-function fillRate(){return .92*[1,1.25,1.5,1.8][S.up.drill]*(G.energy<=0?.7:1)}
+function zones(sc){const m=[0,.05,.1][S.up.magnet];let g0=.6-m*.4,g1=.8+m*.6;if(G.energy<30){g0+=.03;g1-=.03}
+ if(sc&&sc.rusty){g0=Math.max(.42,g0-.08);g1=Math.min(.92,g1+.08)}return{y0:.36,g0,g1}}
+function fillRate(sc){let r=.92*[1,1.25,1.5,1.8][S.up.drill]*(G.energy<=0?.7:1);if(sc&&sc.rusty)r*=.55;return r}
 function bossWatching(){const b=G.boss;return b&&b.phase==='walk'&&b.x>-PS*.2&&b.x<W+PS*.2}
-function unitPay(){return G.R.unit}
+function unitPay(){const m=G?G.dayMult||beltDayMult():beltDayMult();return G.R.unit*(1+.15*(m-1)/1.5)}
 
 /* ---------- 浮字 & 火花 ---------- */
 function addFloat(x,y,txt,col,life=1,scale=1){G.floats.push({x,y,txt,col,life,max:life,scale})}
@@ -830,18 +891,18 @@ function liveNet(){const st=G.stats,u=unitPay();
 
 /* ---------- 拧螺丝核心 ---------- */
 function release(h,cancel){const {part,sc}=h;sc.held=false;if(cancel||sc.state!=='loose'){return}
- const z=zones(),p=sc.prog,[x,y]=screwPos(part,sc),st=G.stats;
+ const z=zones(sc),p=sc.prog,[x,y]=screwPos(part,sc),st=G.stats;
  if(h.wrong){sc.prog=0;return}
- if(p<z.y0){sc.prog=0;st.loose++;G.combo=0;SFX.loose();addFloat(x,y-PS*.2,'没拧紧…','#cfd3df',.8)}
+ if(p<z.y0){sc.prog=0;st.loose++;G.combo=0;SFX.loose();addFloat(x,y-PS*.28,'松早了，再拧一下','#cfd3df',1)}
  else if(p<z.g0){sc.state='done';st.screws++;st.ok++;G.combo=0;SFX.ok();addFloat(x,y-PS*.2,'凑合','#ffcf3f',.8);sparks(x,y,5,['#ffe066','#fff'])}
- else if(p<=z.g1){sc.state='perfect';st.screws++;st.perfect++;G.combo++;st.maxCombo=Math.max(st.maxCombo,G.combo);SFX.ding(G.combo);
+ else if(p<=z.g1){sc.state='perfect';st.screws++;st.perfect++;G.combo++;st.maxCombo=Math.max(st.maxCombo,G.combo);S.bestCombo=Math.max(S.bestCombo||0,G.combo);SFX.perfect();SFX.ding(G.combo);
   addFloat(x,y-PS*.22,G.combo>=3?`拧到位！×${G.combo}`:'拧到位！','#7dffb2',.9,1.1);sparks(x,y,14,['#ffe066','#fff','#7dffb2']);setMood('happy',.8);
   if(G.combo%10===0){st.comboBonus+=2;addFloat(W/2,beltTop-PS*.7,`${G.combo}连击！连击奖 +¥2`,'#ff9f1c',1.4,1.4);SFX.coin();sparks(W/2,beltTop-PS*.6,30,['#ff4d6d','#ffcf3f','#3a86ff','#06d6a0'],1.4)}
   if(bossWatching()&&!G.boss.praised&&Math.random()<.5){G.boss.praised=1;st.praise++;G.boss.line=pick(PRAISE);G.boss.lineT=2.5;G.boss.mood='happy'}}
  else{strip(part,sc);return}
  checkPart(part)}
 function strip(part,sc){const [x,y]=screwPos(part,sc);sc.state='stripped';sc.held=false;G.stats.stripped++;G.combo=0;G.shake=.4;SFX.strip();setMood('panic',1);
- sparks(x,y,22,['#ff4d6d','#ffb703','#fff'],1.3);addFloat(x,y-PS*.25,'滑丝！-¥2','#ff4d6d',1.1,1.2);try{navigator.vibrate&&navigator.vibrate(60)}catch(e){}
+ sparks(x,y,22,['#ff4d6d','#ffb703','#fff'],1.3);addFloat(x,y-PS*.3,'拧过头滑丝了 · -¥2','#ff4d6d',1.2,1.15);try{navigator.vibrate&&navigator.vibrate(60)}catch(e){}
  for(const [k,h] of G.holds)if(h.sc===sc)G.holds.delete(k);checkPart(part)}
 function checkPart(p){if(p.status!=='open')return;if(p.screws.some(s=>s.state==='loose'))return;const st=G.stats,u=unitPay();
  if(p.screws.some(s=>s.state==='stripped')){p.status='bad';st.bad++;p.stampT=.001;SFX.bad();addFloat(p.x,partY()-PS*.55,'次品…白干','#ff8fab',1.1);return}
@@ -853,8 +914,8 @@ function checkPart(p){if(p.status!=='open')return;if(p.screws.some(s=>s.state===
  SFX.partDone();setTimeout(()=>SFX.coin(),180);addFloat(p.x,partY()-PS*.55,`+¥${fmt(pay)}`,'#7dffb2',1.3,1.3)}
 function partExit(p){if(p.status!=='open')return;const st=G.stats;p.status='missed';const n=p.screws.filter(s=>s.state==='loose').length;
  const pen=p.urgent?6:3;st.missed++;st.missedPay+=pen;if(p.urgent)st.urgentMissed++;G.combo=0;SFX.bad();setMood('sad',1.2);
- addFloat(W-PS*.5,beltTop-PS*.35,`漏拧！-¥${pen}`,'#ff4d6d',1.3,1.2);
- chat('质检小张',`【${p.T.n}】漏了 ${n} 颗螺丝！已记录，扣 ¥${pen}${p.urgent?'（加急单双倍）':''}`);
+ SFX.miss();addFloat(W-PS*.55,beltTop-PS*.4,`慢半拍，零件溜走了 · -¥${pen}`,'#ff4d6d',1.4,1.15);
+ chat('质检小张',`【${p.T.n}】溜走了（漏 ${n} 颗）！扣 ¥${pen}${p.urgent?'（加急双倍）':''}`);
  if(bossWatching()){G.boss.line='这都能漏？质检都看见了！';G.boss.lineT=2.2;G.boss.mood='angry'}}
 
 /* ---------- 输入 ---------- */
@@ -905,8 +966,7 @@ function update(dt){if(!G||G.paused)return;const st=G.stats;
  for(let i=0;i<G.parts.length;i++){const pt=G.parts[i];pt.x+=speed*(pt.mult||1)*dt;if(i>0&&pt.mult>1){const ah=G.parts[i-1];if(!ah.gone)pt.x=Math.min(pt.x,ah.x-PS*1.1)}if(pt.stampT)pt.stampT+=dt;if(pt.x-PS*.55>W&&!pt.gone){pt.gone=true;partExit(pt)}}
  G.parts=G.parts.filter(pt=>!pt.gone||pt.x<W+PS*2);G.parts=G.parts.filter(pt=>!pt.gone);
  // 拧
- const rate=fillRate();
- for(const [k,h] of G.holds){const sc=h.sc;if(sc.state!=='loose'||h.part.gone){G.holds.delete(k);sc.held=false;continue}
+ for(const [k,h] of G.holds){const sc=h.sc;const rate=fillRate(sc);if(sc.state!=='loose'||h.part.gone){G.holds.delete(k);sc.held=false;continue}
   sc.prog+=dt*rate;sc.angle+=dt*(7+sc.prog*16);sc.tickAcc+=dt;if(sc.tickAcc>.075){sc.tickAcc=0;SFX.tick(sc.prog)}
   if(Math.random()<.3){const [x,y]=screwPos(h.part,sc);G.sparks.push({x:x+rand(-4,4),y:y+rand(-4,4),vx:rand(-60,60),vy:rand(-120,-40),life:.25,col:'#fff7c2'})}
   if(sc.prog>=1){G.holds.delete(k);strip(h.part,sc)}}
@@ -917,11 +977,12 @@ function update(dt){if(!G||G.paused)return;const st=G.stats;
  // 老板
  updBoss(dt);
  // 加班
- if(!G.otAsked&&G.t>=G.otAt&&G.t<G.baseLen-4){G.otAsked=true;askOT()}
+ if(!G.otAsked&&G.t>=G.otAt&&G.t<G.baseLen-4&&S.day>=1){G.otAsked=true;askOT()}
  if(st.ot&&G.t>G.baseLen&&!G.otShown){G.otShown=true;addFloat(W/2,beltTop-PS*.8,'—— 加班时间 ——','#ff9fb4',2,1.5);SFX.bell()}
  // 消息
  for(const c of G.chats){if(!c.done&&G.t>=c[0]){c.done=1;if(c[1]==='red')chat('老板','[红包] 大家辛苦了！点我领取',true);else{const m=pick(CHATS);chat(m[0],m[1])}}}
  if(G.moodT>0){G.moodT-=dt;if(G.moodT<=0)G.mood=G.energy<30?'sad':'tired'}
+ if(typeof maybeDayTip==='function')maybeDayTip()
  updFx(dt);
  if(G.t>=G.len){G.ended=true;G.endT=0;for(const [k,h] of G.holds)release(h,true);G.holds.clear();stopFish();SFX.bell();setTimeout(()=>SFX.stamp(),500);$('#bossWarn').classList.add('hidden')}
  updateHud()}
@@ -930,7 +991,7 @@ function updFx(dt){G.shake=Math.max(0,G.shake-dt);
  for(const s of G.sparks){s.life-=dt;s.x+=s.vx*dt;s.y+=s.vy*dt;s.vy+=500*dt}G.sparks=G.sparks.filter(s=>s.life>0)}
 function updBoss(dt){const st=G.stats;let b=G.boss;
  if(!b&&G.bossPlan.length&&G.t>=G.bossPlan[0]-G.lead){const dir=Math.random()<.5?1:-1;G.bossPlan.shift();
-  b=G.boss={phase:'warn',t:0,dir,x:dir>0?-PS*.6:W+PS*.6,line:pick(PIE),lineT:0,mood:'smug',caught:false,praised:0,stepAcc:0,ph:0,lines:0};$('#bossWarn').classList.remove('hidden');SFX.warn()}
+  b=G.boss={phase:'warn',t:0,dir,x:dir>0?-PS*.6:W+PS*.6,line:pick(PIE),lineT:0,mood:'smug',caught:false,praised:0,stepAcc:0,ph:0,lines:0};$('#bossWarn').classList.remove('hidden');SFX.warn();SFX.bossNear()}
  if(!b)return;b.t+=dt;
  if(b.phase==='warn'){b.stepAcc+=dt;if(b.stepAcc>.55){b.stepAcc=0;SFX.step()}if(b.t>=G.lead){b.phase='walk';b.t=0;$('#bossWarn').classList.add('hidden');b.lineT=3.2}return}
  if(b.phase==='walk'){const dur=8.5;const v=(W+PS*1.2)/dur;b.x+=b.dir*v*dt;b.ph+=dt*7;b.stepAcc+=dt;if(b.stepAcc>.45){b.stepAcc=0;SFX.step()}
@@ -953,7 +1014,7 @@ function render(t){ctx.setTransform(DPR,0,0,DPR,0,0);
   ctx.moveTo(ex-b.dir*10,ey-16);ctx.lineTo(ex+b.dir*12,ey);ctx.lineTo(ex-b.dir*10,ey+16);ctx.fill();
   if(S.up.radar){ctx.font=`900 13px ${FONT}`;ctx.textAlign=b.dir>0?'left':'right';ctx.fillText(`老板 ${Math.max(0,G.lead-b.t).toFixed(1)}s`,ex+b.dir*16,ey+5)}}
  drawBelt(ctx,G.belt,t);
- const zs=zones(),sr=screwR();
+ const sr=screwR();
  for(const p of G.parts){const y=partY();ctx.save();ctx.translate(p.x,y);
   ctx.fillStyle='rgba(0,0,0,.28)';ctx.beginPath();ctx.ellipse(0,PS*.4,PS*.42,PS*.07,0,0,TAU);ctx.fill();
   if(p.gold){const g=ctx.createRadialGradient(0,0,PS*.1,0,0,PS*.7);g.addColorStop(0,'rgba(255,230,120,.65)');g.addColorStop(1,'rgba(255,230,120,0)');ctx.fillStyle=g;circ(ctx,0,0,PS*.7);ctx.fill()}
@@ -968,6 +1029,7 @@ function render(t){ctx.setTransform(DPR,0,0,DPR,0,0);
    ctx.fillStyle=ctx.strokeStyle;ctx.font=`900 ${PS*.12}px ${FONT}`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(good?'合格':'次品',0,1);ctx.restore()}
   if(p.status==='missed'){ctx.fillStyle='rgba(239,71,111,.9)';ctx.font=`900 ${PS*.12}px ${FONT}`;ctx.textAlign='center';ctx.fillText('漏拧',p.x,y-PS*.45)}}
  for(const [k,h] of G.holds){const [sx,sy]=screwPos(h.part,h.sc);let pr=h.sc.prog;if(G.energy<30)pr=clamp(pr+Math.sin(t*30)*.015,0,1);
+  const zs=zones(h.sc);
   if(h.touch){const {R,lw}=gaugeSize(sr);const pad=R+lw+8;const off=clamp(PS*.48,64,92);const topSafe=Math.max(100,envTop()+8);
    let gx=clamp(sx,pad,W-pad),gy=sy-off,below=false;
    if(gy-R-lw<topSafe){below=true;gy=sy+off;if(gy+R+lw>ctrlTop-8){below=false;gy=clamp(sy-off,topSafe+R+lw,H-pad)}}
@@ -1020,50 +1082,125 @@ $('#suCancel').onclick=()=>{SFX.click();goStart()};
 $('#gpGo').onclick=()=>{SFX.click();if(suFirst)goClockIn();else goStart()};
 $('#myBadge').onclick=()=>{SFX.click();openSignup(false)};
 
-/* ---------- 月工资排行榜（Scores 服务） ---------- */
-const SCORES_BASE='https://scores.keithcirkel.co.uk',SCORES_GAME='nYGGwkUDlR3Z'; // 仅游戏 ID，管理密码不在客户端
-const boardKey=pid=>String(pid).slice(3,8); // 工号后 6 位中的前 5 位，用于去重
+/* ---------- 排行榜（Scores · 仅 game ID，密码不在客户端） ---------- */
+const SCORES_BASE='https://scores.keithcirkel.co.uk';
+const SCORES_BOARDS={
+ pay:{id:'nYGGwkUDlR3Z',label:'月薪',unit:'¥',bestKey:'dls_online_best',pendKey:'dls_online_pending',empty:'光荣榜还空着，虚位以待！<br>每满 5 天发薪时，月工资会自动上榜。',meNone:'打满一个月（5 天）发薪后自动上榜'},
+ parts:{id:'_XsCqquT0HuL',label:'今日件数',unit:'',bestKey:'dls_best_parts_online',pendKey:'dls_pend_parts',empty:'还没人晒今日合格件数。<br>每天下班会尝试上传你的最高单日合格件数。',meNone:'打完一班后自动冲击件数榜'},
+ combo:{id:'KaEPNTXwcENW',label:'最长连击',unit:'×',bestKey:'dls_best_combo_online',pendKey:'dls_pend_combo',empty:'连击榜空空如也。<br>打出高连击后会自动上传你的生涯最长连击。',meNone:'拧出连击后自动上传'},
+};
+const SCORES_GAME=SCORES_BOARDS.pay.id; // 兼容旧引用
+const boardKey=pid=>String(pid).slice(3,8);
 function utf8Trunc(s,max){const te=new TextEncoder();let out='',b=0;for(const ch of s){const n=te.encode(ch).length;if(b+n>max)break;out+=ch;b+=n}return out}
-function boardName(){return`${utf8Trunc(playerName(),9)||'工'}#${boardKey(PID)}`} // 服务端名字上限 15 字节
+function boardName(){return`${utf8Trunc(playerName(),9)||'工'}#${boardKey(PID)}`}
 function parseEntry(e){const raw=String(e.name||'');const i=raw.lastIndexOf('#');let name=raw,key='';if(i>0&&/^[A-Z0-9]{5}$/.test(raw.slice(i+1))){name=raw.slice(0,i);key=raw.slice(i+1)}else key='~'+raw;
  return{name,key,score:Math.round(+e.score||0)}}
 async function fetchJ(url,opt={},ms=9000){const ac2=new AbortController();const t=setTimeout(()=>ac2.abort(),ms);try{const r=await fetch(url,Object.assign({signal:ac2.signal,cache:'no-store'},opt));return r}finally{clearTimeout(t)}}
-async function fetchBoard(){const r=await fetchJ(`${SCORES_BASE}/g/${SCORES_GAME}.json`);if(!r.ok)throw new Error('HTTP '+r.status);const j=await r.json();
+async function fetchBoardId(gid){const r=await fetchJ(`${SCORES_BASE}/g/${gid}.json`);if(!r.ok)throw new Error('HTTP '+r.status);const j=await r.json();
  const best=new Map();for(const e of (j.scores||[])){const p=parseEntry(e);const o=best.get(p.key);if(!o||p.score>o.score)best.set(p.key,p)}
  const list=[...best.values()].sort((a,b)=>b.score-a.score);list.forEach((p,i)=>p.rank=i+1);return list}
-async function submitOnline(score){let last='';
+async function fetchBoard(){return fetchBoardId(SCORES_BOARDS.pay.id)}
+async function submitToBoard(boardKeyName,score){const B=SCORES_BOARDS[boardKeyName];let last='';
  for(let attempt=0;attempt<2;attempt++){
-  const t=await fetchJ(`${SCORES_BASE}/g/${SCORES_GAME}/token`,{method:'POST'});if(!t.ok)throw new Error('token HTTP '+t.status);const {token}=await t.json();
-  const body=new URLSearchParams({token,name:boardName(),score:String(score)});
-  const r=await fetchJ(`${SCORES_BASE}/g/${SCORES_GAME}`,{method:'POST',body});if(r.ok)return true;
+  const t=await fetchJ(`${SCORES_BASE}/g/${B.id}/token`,{method:'POST'});if(!t.ok)throw new Error('token HTTP '+t.status);const {token}=await t.json();
+  const body=new URLSearchParams({token,name:boardName(),score:String(Math.round(score))});
+  const r=await fetchJ(`${SCORES_BASE}/g/${B.id}`,{method:'POST',body});if(r.ok)return true;
   last=`HTTP ${r.status} ${(await r.text().catch(()=>'')).slice(0,80)}`;if(r.status!==403)break}
  throw new Error(last)}
-function onlineBest(){return +(lsGet(OBEST_KEY)||0)}
-/* 月底提交：只在超过本人已提交最佳时提交 */
+async function submitOnline(score){return submitToBoard('pay',score)}
+function onlineBest(k){return +(lsGet((SCORES_BOARDS[k]||SCORES_BOARDS.pay).bestKey)||0)}
 async function handleMonthSubmit(total,el){const sc=Math.round(total);const set=(cls,html)=>{if(el){el.className='slipboard '+cls;el.innerHTML=html}};
  if(sc<=0){set('err',`本月实发 ¥${sc}，没脸上榜（≤0 不提交）`);return}
- const best=onlineBest();if(sc<=best){set('',`本月 ¥${sc} 未超过你的榜上最佳 ¥${best}，不重复提交`);fetchBoard().then(l=>{const me=l.find(p=>p.key===boardKey(PID));if(me)set('',`本月 ¥${sc} 未超过你的最佳 ¥${best} · 你目前第 ${me.rank} 名`)}).catch(()=>{});return}
+ const best=onlineBest('pay');if(sc<=best){set('',`本月 ¥${sc} 未超过你的榜上最佳 ¥${best}，不重复提交`);fetchBoardId(SCORES_BOARDS.pay.id).then(l=>{const me=l.find(p=>p.key===boardKey(PID));if(me)set('',`本月 ¥${sc} 未超过最佳 ¥${best} · 你目前第 ${me.rank} 名`)}).catch(()=>{});return}
  set('','<span class="spin" style="display:inline-block;width:14px;height:14px;border-width:3px;margin:0 6px -2px 0"></span>正在把工资条贴到光荣榜…');
- try{await submitOnline(sc);lsSet(OBEST_KEY,String(sc));try{localStorage.removeItem(OPEND_KEY)}catch(e){}
-  let rk='';try{const l=await fetchBoard();const me=l.find(p=>p.key===boardKey(PID));if(me)rk=`，当前第 ${me.rank} 名`}catch(e){}
+ try{await submitToBoard('pay',sc);lsSet(SCORES_BOARDS.pay.bestKey,String(sc));try{localStorage.removeItem(SCORES_BOARDS.pay.pendKey)}catch(e){}
+  let rk='';try{const l=await fetchBoardId(SCORES_BOARDS.pay.id);const me=l.find(p=>p.key===boardKey(PID));if(me)rk=`，当前第 ${me.rank} 名`}catch(e){}
   set('ok',`🏆 已上榜${rk}！（本月 ¥${sc}）`);SFX.fanfare()}
- catch(e){lsSet(OPEND_KEY,String(sc));set('err',`网络开小差，没贴上榜（¥${sc}），下次打开会自动重试`);console.info('[dls] submit failed',e&&e.message)}}
-async function retryPending(){const p=+(lsGet(OPEND_KEY)||0);if(!p||p<=onlineBest()||!PNAME||DEMO)return;try{await submitOnline(p);lsSet(OBEST_KEY,String(p));localStorage.removeItem(OPEND_KEY)}catch(e){}}
-let boardFrom='start';
-function openBoard(from){boardFrom=from||'start';SFX.click();show('boardScr');loadBoard()}
-async function loadBoard(){const L=$('#boardList'),M=$('#boardMe');L.innerHTML='<div class="spin"></div><div class="bempty" style="padding:4px">正在从公告栏上抄名单…</div>';M.textContent='……';
+ catch(e){lsSet(SCORES_BOARDS.pay.pendKey,String(sc));set('err',`网络开小差，没贴上榜（¥${sc}），下次打开会自动重试`);console.info('[dls] submit failed',e&&e.message)}}
+async function submitStatBoard(key,score){const B=SCORES_BOARDS[key];const sc=Math.round(score);if(sc<=0)return;
+ const best=+(lsGet(B.bestKey)||0);if(sc<=best)return;try{await submitToBoard(key,sc);lsSet(B.bestKey,String(sc));localStorage.removeItem(B.pendKey)}catch(e){lsSet(B.pendKey,String(sc))}}
+async function retryPending(){if(!PNAME||DEMO)return;
+ for(const [k,B] of Object.entries(SCORES_BOARDS)){const p=+(lsGet(B.pendKey)||0);if(!p||p<=+(lsGet(B.bestKey)||0))continue;
+  try{await submitToBoard(k,p);lsSet(B.bestKey,String(p));localStorage.removeItem(B.pendKey)}catch(e){}}}
+let boardFrom='start',boardTab='pay';
+function openBoard(from){boardFrom=from||'start';SFX.click();boardTab='pay';show('boardScr');syncBoardTabs();loadBoard()}
+function syncBoardTabs(){document.querySelectorAll('.btab').forEach(b=>b.classList.toggle('on',b.dataset.tab===boardTab));
+ const B=SCORES_BOARDS[boardTab];$('#boardHead').textContent=boardTab==='pay'?'本厂月薪光荣榜':boardTab==='parts'?'今日合格件数榜':'最长连击光荣榜';
+ $('#boardSub').textContent=boardTab==='pay'?'按单月实发工资 · 每位员工只计最高一个月 · 前 20 名':boardTab==='parts'?'生涯最高「单日合格件数」· 按工号去重 · 前 20 名':'生涯最长连击 · 按工号去重 · 前 20 名'}
+async function loadBoard(){const L=$('#boardList'),M=$('#boardMe');const B=SCORES_BOARDS[boardTab];L.innerHTML='<div class="spin"></div><div class="bempty" style="padding:4px">正在从公告栏上抄名单…</div>';M.textContent='……';
  await retryPending();
- try{const list=await fetchBoard();const myKey=boardKey(PID);const me=list.find(p=>p.key===myKey);
-  if(!list.length)L.innerHTML='<div class="bempty">光荣榜还空着，虚位以待！<br>每满 5 天（一个月）发薪时，你的月工资会自动上榜。</div>';
+ try{const list=await fetchBoardId(B.id);const myKey=boardKey(PID);const me=list.find(p=>p.key===myKey);
+  const fmtSc=v=>boardTab==='pay'?`¥${v}`:boardTab==='combo'?`×${v}`:`${v} 件`;
+  if(!list.length)L.innerHTML=`<div class="bempty">${B.empty}</div>`;
   else L.innerHTML=list.slice(0,20).map(p=>{const mine=p.key===myKey;const nm=mine?playerName():p.name;
-   return`<div class="brow r${p.rank}${mine?' mine':''}"><span class="rk">${p.rank}</span><span class="nm">${esc(nm)}${mine?`<small>${esc(PID)}</small>`:p.key[0]!=='~'?`<small>LS-${esc(p.key)}…</small>`:''}${mine?'<span class="you">你</span>':''}</span><span class="sc">¥${p.score}</span></div>`}).join('');
-  M.innerHTML=me?`你（${esc(playerName())} · ${PID}）目前排名 <b style="color:#ffcf3f">第 ${me.rank} 名</b> · 最佳月薪 ¥${me.score}`:
-   `你（${esc(playerName())}）还没上榜 · ${onlineBest()?`最佳 ¥${onlineBest()}`:'打满一个月（5 天）发薪后自动上榜'}`}
+   return`<div class="brow r${p.rank}${mine?' mine':''}"><span class="rk">${p.rank}</span><span class="nm">${esc(nm)}${mine?`<small>${esc(PID)}</small>`:p.key[0]!=='~'?`<small>LS-${esc(p.key)}…</small>`:''}${mine?'<span class="you">你</span>':''}</span><span class="sc">${fmtSc(p.score)}</span></div>`}).join('');
+  const best=+(lsGet(B.bestKey)||0);
+  M.innerHTML=me?`你（${esc(playerName())} · ${PID}）目前排名 <b style="color:#ffcf3f">第 ${me.rank} 名</b> · ${fmtSc(me.score)}`:
+   `你（${esc(playerName())}）还没上榜 · ${best?`本地最佳 ${fmtSc(best)}`:B.meNone}`}
  catch(e){L.innerHTML='<div class="bempty">📌 公告栏被风吹跑了……<br>（网络错误或服务暂时不可用，请稍后点“刷新”）</div>';M.textContent='离线中：工资照发，榜单稍后再看'}}
 $('#btnBoard1').onclick=()=>openBoard('start');$('#btnBoard2').onclick=()=>openBoard('payslip');
-$('#boardRefresh').onclick=()=>{SFX.click();loadBoard()};$('#boardClose').onclick=()=>{SFX.click();if(boardFrom==='payslip')show('payslip');else goStart()};
+$('#boardRefresh').onclick=()=>{SFX.click();loadBoard()};$('#boardClose').onclick=()=>{SFX.click();if(boardFrom==='payslip')show('payslip');else if(boardFrom==='ach')openAchievements();else goStart()};
+document.querySelectorAll('.btab').forEach(b=>b.onclick=()=>{SFX.click();boardTab=b.dataset.tab;syncBoardTabs();loadBoard()});
+/* ---------- 新手提示 / 成就 / 打工战报 ---------- */
+const ACHIEVEMENTS=[
+ {id:'noslip',n:'零滑丝达人',d:'一天拧螺丝零滑丝（至少拧 8 颗）',bonus:12,icon:'🔩'},
+ {id:'combo50',n:'连击狂魔',d:'单班连击达到 50',bonus:20,icon:'🔥'},
+ {id:'parts20',n:'计件小能手',d:'一天合格 20 件及以上',bonus:15,icon:'📦'},
+ {id:'perfect80',n:'稳如老狗',d:'单日完美率 ≥80%（拧 ≥12 颗）',bonus:15,icon:'🎯'},
+ {id:'stealth',n:'摸鱼艺术家',d:'摸鱼 ≥8 秒且没被抓',bonus:10,icon:'🐟'},
+ {id:'fullmonth',n:'全勤打工人',d:'一个月（5 天）零迟到拿全勤',bonus:25,icon:'📅'},
+ {id:'gold3',n:'捡漏之王',d:'一天搞定 3 个金色零件',bonus:18,icon:'✨'},
+ {id:'firstweek',n:'入职一周',d:'累计打满 5 个班',bonus:8,icon:'🪪'},
+];
+function achUnlocked(id){return !!(S.ach&&S.ach[id])}
+function unlockAch(id,extra){if(achUnlocked(id))return null;const a=ACHIEVEMENTS.find(x=>x.id===id);if(!a)return null;
+ S.ach=S.ach||{};S.ach[id]={at:S.day,t:Date.now(),...(extra||{})};S.money+=a.bonus;save();SFX.ach();
+ toast(`${a.icon} 成就「${a.n}」+¥${a.bonus}`);return a}
+function evaluateAchievements(st,payday,month){const got=[];
+ if(st.stripped===0&&st.screws>=8){const a=unlockAch('noslip');if(a)got.push(a)}
+ if(st.maxCombo>=50){const a=unlockAch('combo50');if(a)got.push(a)}
+ if(st.pieces>=20){const a=unlockAch('parts20');if(a)got.push(a)}
+ const tot=st.perfect+st.ok;if(tot>=12&&st.perfect/tot>=.8){const a=unlockAch('perfect80');if(a)got.push(a)}
+ if(st.fishTime>=8&&st.caught===0){const a=unlockAch('stealth');if(a)got.push(a)}
+ if(st.gold>=3){const a=unlockAch('gold3');if(a)got.push(a)}
+ if(S.day>=5){const a=unlockAch('firstweek');if(a)got.push(a)}
+ if(payday&&month&&month.late===0){const a=unlockAch('fullmonth');if(a)got.push(a)}
+ return got}
+function openAchievements(){SFX.click();show('achScr');
+ const n=ACHIEVEMENTS.filter(a=>achUnlocked(a.id)).length;
+ $('#achList').innerHTML=ACHIEVEMENTS.map(a=>{const u=achUnlocked(a.id);const meta=u?S.ach[a.id]:null;
+  return`<div class="ach ${u?'on':''}"><div class="ai">${a.icon}</div><div class="atx"><b>${a.n}</b>${u?'<span class="got">已达成</span>':''}<p>${a.d}</p>
+  <small>${u?`第 ${meta.at||'?'} 天解锁 · 奖励 ¥${a.bonus}`:`奖励 ¥${a.bonus}`}</small></div></div>`}).join('');
+ $('#achProg').textContent=`已解锁 ${n}/${ACHIEVEMENTS.length}`}
+function maybeDayTip(){if(!G||G.paused||G.ended)return;const d=S.day;S.tipsSeen=S.tipsSeen||{};
+ if(d===0&&!S.tipsSeen.hold&&G.t>1.2){S.tipsSeen.hold=1;save();toast('按住螺丝，绿区松手～');return}
+ if(d===1&&!S.tipsSeen.bit&&G.t>4){S.tipsSeen.bit=1;save();toast('批头要对上：十字 / 一字 / 六角');return}
+ if(d===1&&!S.tipsSeen.fish&&G.t>18){S.tipsSeen.fish=1;save();toast('累了可摸鱼回精力——但小心老板');return}
+ if(d>=1&&!S.tipsSeen.ot&&G.otAsked===false&&G.t>G.otAt-8&&G.t<G.otAt){S.tipsSeen.ot=1;save();toast('群里可能来加班消息…自己看着办');return}
+ if(d>=2&&!S.tipsSeen.rust&&G.parts.some(p=>p.screws.some(sc=>sc.rusty&&sc.state==='loose'))){S.tipsSeen.rust=1;save();toast('生锈螺丝要拧久一点，绿区也更宽');return}}
+
+const SHARE_LINES=['今天也是螺丝拧进灵魂的一天。','工资薄如纸，连击燃如火。','老板画饼，我拧螺丝。','摸鱼未遂，全勤未遂，人还在。','合格一件是一件，滑丝的事儿别提。','打工人不优秀，但很坚持。','产线提速了，我的心态也快了。','期权账面百万，口袋里还有奶茶钱。'];
+function shareCardPng(slip){const st=slip._stats||{};const Wd=720,Hh=960;const c=document.createElement('canvas');c.width=Wd;c.height=Hh;const x=c.getContext('2d');
+ x.fillStyle='#ffb347';x.fillRect(0,0,Wd,Hh);
+ const bg=x.createLinearGradient(0,0,0,Hh);bg.addColorStop(0,'#fff6d6');bg.addColorStop(1,'#ffd27a');x.fillStyle=bg;rrect(x,28,28,Wd-56,Hh-56,28);x.fill();
+ x.fillStyle='#2b2d42';x.font=`900 28px ${FONT}`;x.textAlign='center';x.fillText('一起打螺丝 · 打工战报',Wd/2,78);
+ x.font=`800 18px ${FONT}`;x.fillStyle='#8a4b00';x.fillText(`第 ${slip.day} 天 · ${playerName()} · ${PID}`,Wd/2,112);
+ // mascot
+ drawMascot(x,Wd/2,250,52,slip.T&&slip.T.k==='gold'?'happy':(st.caught?'panic':'tired'),2,true);
+ const line=pick(SHARE_LINES);x.fillStyle='#2b2d42';x.font=`900 26px ${FONT}`;
+ const wrapL=(t,max)=>{const out=[];let cur='';for(const ch of t){if(x.measureText(cur+ch).width>max&&cur){out.push(cur);cur=ch}else cur+=ch}if(cur)out.push(cur);return out};
+ wrapL('「'+line+'」',Wd-120).forEach((l,i)=>x.fillText(l,Wd/2,360+i*34));
+ const stats=[['合格',String(st.pieces||0)+' 件'],['完美',String(st.perfect||0)+' 颗'],['滑丝',String(st.stripped||0)+' 颗'],['连击',String(st.maxCombo||0)],['实发','¥'+fmt(slip.net)],['称号',(slip.T&&slip.T.n)||'打工人']];
+ stats.forEach((row,i)=>{const y=470+i*58;rrect(x,70,y,Wd-140,50,14);x.fillStyle=i%2?'#fff8ea':'#fff';x.fill();
+  x.fillStyle='#666';x.font=`800 20px ${FONT}`;x.textAlign='left';x.fillText(row[0],90,y+32);
+  x.fillStyle='#2b2d42';x.font=`900 24px ${FONT}`;x.textAlign='right';x.fillText(row[1],Wd-90,y+32)});
+ x.textAlign='center';x.fillStyle='#8a4b00';x.font=`700 16px ${FONT}`;x.fillText('—— 打螺丝一时爽，一直拧一直爽 ——',Wd/2,Hh-48);
+ return c.toDataURL('image/png')}
+function doShareReport(){if(!curSlip)return;SFX.share();const url=shareCardPng(curSlip);
+ const a=document.createElement('a');a.href=url;a.download=`一起打螺丝-战报-第${curSlip.day}天.png`;document.body.appendChild(a);a.click();a.remove();
+ $('#slipImg').src=url;$('#imgModal h2').textContent='打工战报已生成';show('imgModal')}
 /* ---------- 界面切换 ---------- */
-const SCREENS=['start','clockin','pause','otModal','payslip','shopScr','imgModal','ending','signup','boardScr','ipo'];
+const SCREENS=['start','clockin','pause','otModal','payslip','shopScr','imgModal','ending','signup','boardScr','ipo','achScr'];
 function show(id){for(const s of SCREENS)$('#'+s).classList.toggle('hidden',s!==id&&!(id==='imgModal'&&s==='payslip')&&!(id==='boardScr'&&s===boardFrom))}
 function setGameUi(on){$('#hud').classList.toggle('hidden',!on);$('#controls').classList.toggle('hidden',!on);if(!on){$('#bossWarn').classList.add('hidden');$('#phone').classList.add('hidden');$('#chat').innerHTML=''}layout()}
 let toastT=0;function toast(t){const el=$('#toast');el.textContent=t;el.style.opacity=1;clearTimeout(toastT);toastT=setTimeout(()=>el.style.opacity=0,1600)}
@@ -1071,8 +1208,13 @@ function refreshMute(){const t=SET.mute?'🔇':'🔊';$('#muteBtn1').textContent
 function toggleMute(){SET.mute=!SET.mute;saveSet();if(SET.mute&&AC){AC.suspend()}else{ac();SFX.click()}refreshMute()}
 $('#muteBtn1').onclick=toggleMute;$('#muteBtn2').onclick=toggleMute;
 
+function refreshHowto(){const el=$('#howto');if(!el)return;
+ if(S.day===0){el.innerHTML=`<li><b>按住</b>螺丝，圆环走到<b style="color:#06a47a">绿区</b>松手 = 拧到位！</li><li>零件离开前拧完才有工资。花活明天再学～</li>`}
+ else{el.innerHTML=`<li><b>按住</b>到绿区松手；太早=松了，过头=<b style="color:#d6334f">滑丝</b>。</li>
+ <li>批头要对上（十字/一字/六角）。漏拧扣钱。</li>
+ <li>可<b>摸鱼</b>回精力，但老板巡视时别被抓。每 5 天发一次月薪。</li>`}}
 function goStart(){screen='start';G=null;setGameUi(false);show('start');
- refreshBadge();$('#sRank').textContent=RANKS[S.rank].n;$('#sDay').textContent=S.day+1;$('#sMoney').textContent=fmt(S.money)}
+ refreshBadge();refreshHowto();$('#sRank').textContent=RANKS[S.rank].n;$('#sDay').textContent=S.day+1;$('#sMoney').textContent=fmt(S.money)}
 
 /* ---------- 打卡 ---------- */
 let ciTimer=0,ciMin=0;
@@ -1167,18 +1309,24 @@ let curSlip=null;
 function finishShift(){const st=G.stats;S.day++;const day=S.day,payday=day%5===0;const M=S.month;
  M.days++;if(st.late)M.late++;M.screws+=st.screws+st.stripped;M.perfect+=st.perfect;M.caught+=st.caught;M.stripped+=st.stripped;M.missed+=st.missed;if(st.ot)M.ot++;M.parts+=st.pieces;M.base+=G.R.base;M.fish+=st.fishTime;
  const good=st.perfect+st.ok;S.totalScrews+=good;S.totalPerfect+=st.perfect;S.totalParts+=st.pieces;
+ S.bestParts=Math.max(S.bestParts||0,st.pieces);S.bestCombo=Math.max(S.bestCombo||0,st.maxCombo);
  const oldRank=S.rank;const nr=rankFor(S.totalScrews);let promo=null;if(nr>oldRank){S.rank=nr;promo=RANKS[nr].n}
- const slip=buildSlip(st,payday,M,day,oldRank,promo);S.money+=slip.net;if(payday)slip.monthTotal=M.earned+slip.net;S.totalEarned+=slip.net;S.bestDay=Math.max(S.bestDay,slip.net);M.earned+=slip.net;
+ const achGot=evaluateAchievements(st,payday,M);
+ const slip=buildSlip(st,payday,M,day,oldRank,promo);slip._stats={pieces:st.pieces,perfect:st.perfect,stripped:st.stripped,maxCombo:st.maxCombo,caught:st.caught};
+ S.money+=slip.net;if(payday)slip.monthTotal=M.earned+slip.net;S.totalEarned+=slip.net;S.bestDay=Math.max(S.bestDay,slip.net);M.earned+=slip.net;
  S.history.push({d:day,net:Math.round(slip.net*100)/100,t:slip.T.n});if(S.history.length>40)S.history.shift();
  if(payday)S.month=defMonth();save();showSlip(slip);if(payday&&!DEMO)handleMonthSubmit(slip.monthTotal,$('#slipBoard'));
+ if(!DEMO){submitStatBoard('parts',st.pieces);submitStatBoard('combo',st.maxCombo)}
  if(payday){if(shouldTriggerIpo())pendingIpo=true}
- if(promo)setTimeout(()=>SFX.fanfare(),600)}
+ if(promo)setTimeout(()=>SFX.fanfare(),600);
+ if(achGot&&achGot.length)setTimeout(()=>toast(`${achGot.map(a=>a.icon).join('')} 新成就 ×${achGot.length}`),1400)}
 function showSlip(slip){curSlip=slip;screen='payslip';setGameUi(false);$('#slipBox').innerHTML=slipHtml(slip);show('payslip');$('#payslip').scrollTop=0;SFX.register()}
 $('#btnNext').onclick=()=>{SFX.click();if(pendingIpo){pendingIpo=false;showIpo();return}if(S.rank===RANKS.length-1&&!S.endingSeen){showEnding();return}goClockIn()};
 $('#btnShop2').onclick=()=>openShop('payslip');$('#btnHome').onclick=()=>{SFX.click();goStart()};
 $('#btnSaveSlip').onclick=()=>{if(!curSlip)return;SFX.click();const url=slipPng(curSlip);const a=document.createElement('a');a.href=url;a.download=`一起打螺丝-工资条-第${curSlip.day}天.png`;document.body.appendChild(a);a.click();a.remove();
- $('#slipImg').src=url;show('imgModal')};
-$('#imgClose').onclick=()=>show('payslip');
+ $('#imgModal h2').textContent='工资条已生成';$('#slipImg').src=url;show('imgModal')};
+$('#btnShare').onclick=()=>doShareReport();
+$('#imgClose').onclick=()=>{$('#imgModal h2').textContent='工资条已生成';show('payslip')};
 
 /* 工资条 → PNG（canvas 重绘） */
 function slipPng(s){const Wd=750,pad=48,lh=64;const rows=s.inc.length+s.ded.length;const Hh=330+rows*lh+120+300+(s.promo?80:0)+60;
@@ -1237,8 +1385,8 @@ function renderShop(){$('#shBal').textContent=fmt(S.money);const r=S.rank,R=RANK
    return`<div class="item${lock?' locked':''}"><div class="ic">${shopIcon('opt')}</div><div class="tx"><b>${pk.n}</b><span class="lv">${pk.tag}${owned?' · 已持有':''}</span><p>${pk.desc}</p>${lock?`<div class="lockhint">🔒 升至「${RANKS[OPT_UNLOCK_RANK].n}」后解锁（当前 ${R.n}）</div>`:''}</div>
    <button class="btn ${owned||lock?'gray':can?'green':'gray'}" data-opt="${pk.id}" ${owned||lock||!can?'disabled':''}>${owned?'已认购':lock?'未解锁':'¥'+pk.price}</button></div>`}).join('');
  $('#shopList').innerHTML=SHOP.map(it=>{let lv,price,desc,maxed=false;
-  if(it.tea){lv=`库存 ${S.tea} 杯`;price=it.price;desc=it.desc}else{const l=S.up[it.id];maxed=l>=it.max;lv=`Lv.${l}/${it.max}`;price=maxed?0:it.price[l];desc=maxed?'已满级（老板看了都想借）':it.desc[l]}
-  return`<div class="item"><div class="ic">${shopIcon(it.id)}</div><div class="tx"><b>${it.n}</b><span class="lv">${lv}</span><p>${desc}</p></div>
+  let roi='';if(it.tea){lv=`库存 ${S.tea} 杯`;price=it.price;desc=it.desc;roi=it.roi||''}else{const l=S.up[it.id];maxed=l>=it.max;lv=`Lv.${l}/${it.max}`;price=maxed?0:it.price[l];desc=maxed?'已满级（老板看了都想借）':it.desc[l];roi=maxed?'':(it.roi?it.roi[l]:'')}
+  return`<div class="item"><div class="ic">${shopIcon(it.id)}</div><div class="tx"><b>${it.n}</b><span class="lv">${lv}</span><p>${desc}</p>${roi?`<span class="roi">${roi}</span>`:''}</div>
   <button class="btn ${maxed?'gray':'green'}" data-buy="${it.id}" ${maxed||S.money<price?'disabled':''}>${maxed?'满级':'¥'+price}</button></div>`}).join('')+optHtml;
  document.querySelectorAll('[data-buy]').forEach(b=>b.onclick=()=>buy(b.dataset.buy));
  document.querySelectorAll('[data-opt]').forEach(b=>b.onclick=()=>buyOpt(b.dataset.opt))}
@@ -1247,7 +1395,7 @@ function buy(id){const it=SHOP.find(i=>i.id===id);let price;if(it.tea)price=it.p
 function buyOpt(id){const pk=OPT_PACKS.find(p=>p.id===id);if(!pk)return;if(!optUnlocked()){SFX.wrong();toast('还没到线长，老板不给配股');return}
  if(S.opt.packs[id]){toast('这份已经认购过啦');return}if(S.money<pk.price){SFX.wrong();toast('现金不够买饼……先拧几天');return}
  S.money-=pk.price;S.opt.packs[id]=1;S.opt.shares=Math.round((S.opt.shares+pk.shares)*1000)/1000;save();SFX.fanfare();toast(`恭喜获配 ${pk.tag}！纸面已加钱`);renderShop()}
-$('#btnShop1').onclick=()=>openShop('start');$('#shopClose').onclick=()=>{SFX.click();if(shopFrom==='payslip')show('payslip');else goStart()};
+$('#btnShop1').onclick=()=>openShop('start');$('#btnAch1').onclick=()=>openAchievements();$('#achClose').onclick=()=>{SFX.click();goStart()};$('#shopClose').onclick=()=>{SFX.click();if(shopFrom==='payslip')show('payslip');else goStart()};
 $('#shopGo').onclick=()=>{SFX.click();if(S.rank===RANKS.length-1&&!S.endingSeen&&shopFrom==='payslip'){showEnding();return}goClockIn()};
 
 
@@ -1358,7 +1506,10 @@ function boot(){layout();refreshMute();goStart();requestAnimationFrame(loop);
  else if(DEMO==='ipo'){S.opt.shares=Math.max(S.opt.shares,.16);S.opt.packs={a:1,b:1,c:1};S.day=Math.max(S.day,15);showIpo()}
  else if(DEMO==='play'||DEMO==='boss'||DEMO==='ot'){startShift(false)}
  else if(DEMO==='ending'){showEnding()}
- else if(DEMO==='clockin'){goClockIn()}}
+ else if(DEMO==='clockin'){goClockIn()}
+ else if(DEMO==='achievements'||DEMO==='ach'){S.ach={noslip:{at:1},combo50:{at:2},parts20:{at:3},perfect80:{at:3},stealth:{at:4},fullmonth:{at:5},gold3:{at:2},firstweek:{at:5}};openAchievements()}
+ else if(DEMO==='share'){const st=fakeStats();const slip=buildSlip(st,false,defMonth(),3,1,null);slip._stats=st;curSlip=slip;showSlip(slip);setTimeout(doShareReport,400)}
+}
 boot();
 </script>
 </body></html>
