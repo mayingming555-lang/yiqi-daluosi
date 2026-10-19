@@ -268,6 +268,18 @@ background-image:linear-gradient(rgba(0,0,0,.025) 1px,transparent 1px);backgroun
 .ach .ai{font-size:28px;width:42px;text-align:center;line-height:42px}
 .ach .atx{flex:1;min-width:0}.ach .atx b{font-size:15px}.ach .got{margin-left:6px;background:#06c08f;color:#fff;font-size:11px;padding:1px 6px;border-radius:6px;font-weight:900}
 .ach .atx p{margin:2px 0;font-size:12.5px;color:#666}.ach .atx small{color:#999;font-size:11.5px}
+
+/* family */
+.fambox{background:#fff8ea;border-radius:22px;max-width:480px;width:100%;padding:14px;box-shadow:0 16px 40px rgba(0,0,0,.35);animation:pop .3s cubic-bezier(.3,1.6,.6,1);max-height:86vh;overflow:auto}
+.fambox h2{margin:0;text-align:center}
+.fambox .bal{text-align:center;font-weight:900;font-size:17px;margin:4px 0 8px;color:#0a7d55}
+.fambox .famsum{background:#2b2d42;color:#fff;border-radius:14px;padding:10px 12px;margin-bottom:10px;font-size:13px;line-height:1.55}
+.fambox .famsum b{color:#ffcf3f;font-size:18px}
+.fambox .famnote{font-size:12.5px;color:#8a4b00;font-weight:700;text-align:center;margin:0 0 10px;line-height:1.45}
+.item.onfam{outline:2px solid #06c08f;box-shadow:0 3px 0 #9fe8cb}
+.famic{font-size:28px;line-height:1}
+.statline .sfam{display:block;width:100%;font-size:12px;color:#8a4b00;font-weight:700;margin-top:4px}
+
 .item .roi{display:inline-block;margin-top:3px;font-size:11.5px;font-weight:800;color:#0a7d55;background:#e6fff5;padding:1px 7px;border-radius:6px}
 .howto.short li{margin:.2em 0}
 
@@ -311,7 +323,7 @@ background-image:linear-gradient(rgba(0,0,0,.025) 1px,transparent 1px);backgroun
  <button class="mybadge hidden" id="myBadge" aria-label="我的工牌"><span class="ic">工牌</span><b id="mbName">打工人</b><small id="mbPid">LS-000000</small><span>✎</span></button>
  <canvas id="mascotCv"></canvas>
  <div class="startCard">
-  <div class="statline"><span id="sRank">普工</span><span>第 <b id="sDay">1</b> 天</span><span>余额 ¥<b id="sMoney">0</b></span></div>
+  <div class="statline"><span id="sRank">普工</span><span>第 <b id="sDay">1</b> 天</span><span>余额 ¥<b id="sMoney">0</b></span><span class="sfam" id="sFam">养家：发薪日自动寄回家</span></div>
   <ol class="howto short" id="howto">
    <li><b>按住</b>螺丝，圆环走到<b style="color:#06a47a">绿区</b>松手 = 拧到位！</li>
    <li>零件离开前拧完才有计件工资。别的花活，上班后会慢慢教你～</li>
@@ -320,6 +332,7 @@ background-image:linear-gradient(rgba(0,0,0,.025) 1px,transparent 1px);backgroun
  <div class="btnrow">
   <button class="btn" id="btnStart">▶ 开始上班</button>
   <button class="btn blue" id="btnShop1">🛒 小卖部</button>
+  <button class="btn" id="btnFam1" style="background:linear-gradient(#ffd0a8,#ff9f5a);color:#5a2800;box-shadow:0 5px 0 #c45e18,0 8px 16px rgba(0,0,0,.2),inset 0 2px 0 rgba(255,255,255,.5)">🏠 家里</button>
   <button class="btn red" id="btnBoard1">🏆 光荣榜</button>
   <button class="btn gray" id="btnAch1">🏅 成就</button>
  </div>
@@ -359,6 +372,7 @@ background-image:linear-gradient(rgba(0,0,0,.025) 1px,transparent 1px);backgroun
   <button class="btn small" id="btnShare" style="background:linear-gradient(#ffd0e0,#ff8fab);color:#5a0626;box-shadow:0 5px 0 #c2406a,0 8px 16px rgba(0,0,0,.2),inset 0 2px 0 rgba(255,255,255,.5)">📣 打工战报</button>
   <button class="btn green small" id="btnNext">明天继续打螺丝 ▶</button>
   <button class="btn small" id="btnShop2">🛒 小卖部</button>
+  <button class="btn small" id="btnFam2" style="background:linear-gradient(#ffd0a8,#ff9f5a);color:#5a2800;box-shadow:0 5px 0 #c45e18,0 8px 16px rgba(0,0,0,.2),inset 0 2px 0 rgba(255,255,255,.5)">🏠 家里</button>
   <button class="btn red small" id="btnBoard2">🏆 光荣榜</button>
   <button class="btn gray small" id="btnHome">首页</button>
  </div></div>
@@ -423,9 +437,19 @@ background-image:linear-gradient(rgba(0,0,0,.025) 1px,transparent 1px);backgroun
 
 
 <div id="achScr" class="screen dim hidden"><div class="achbox">
- <h2>🏅 打工成就</h2><div class="prog" id="achProg">已解锁 0/8</div>
+ <h2>🏅 打工成就</h2><div class="prog" id="achProg">已解锁 0/11</div>
  <div id="achList"></div>
  <div class="btnrow"><button class="btn gray" id="achClose">返回</button></div>
+</div></div>
+
+<div id="famScr" class="screen dim hidden"><div class="fambox">
+ <h2>🏠 养家糊口</h2>
+ <div class="bal">余额 ¥<span id="famBal">0</span></div>
+ <div class="famsum">累计寄回家 <b>¥<span id="famPaid">0</span></b><div id="famNext" style="margin-top:4px;opacity:.9">下个发薪日预计…</div></div>
+ <p class="famnote" id="famBlurb">妈：又寄钱了？你自己多吃点</p>
+ <div id="famList"></div>
+ <p class="famnote" style="opacity:.75">发薪日（每 5 天）强制扣生活费；加码自愿，改档不退款，下次发薪生效。</p>
+ <div class="btnrow"><button class="btn gray" id="famClose">返回</button></div>
 </div></div>
 <div id="toast"></div>
 <script>
@@ -443,9 +467,9 @@ const TAU=Math.PI*2;
 
 /* ---------- 存档 ---------- */
 const SAVE_KEY='dls_save', SET_KEY='dls_settings';
-function defMonth(){return{days:0,late:0,earned:0,screws:0,perfect:0,caught:0,stripped:0,missed:0,ot:0,parts:0,base:0,fish:0}}
+function defMonth(){return{days:0,late:0,earned:0,screws:0,perfect:0,caught:0,stripped:0,missed:0,ot:0,parts:0,base:0,fish:0,family:0}}
 function defSave(){return{v:1,money:0,day:0,totalScrews:0,totalPerfect:0,totalParts:0,totalEarned:0,rank:0,
- up:{drill:0,magnet:0,auto:0,wrist:0,radar:0},tea:1,opt:{shares:0,packs:{a:0,b:0,c:0},lastIpoDay:0,ipoCount:0,cash:0},ach:{},bestParts:0,bestCombo:0,month:defMonth(),bestDay:0,endingSeen:false,history:[],tipsSeen:{}}}
+ up:{drill:0,magnet:0,auto:0,wrist:0,radar:0},tea:1,opt:{shares:0,packs:{a:0,b:0,c:0},lastIpoDay:0,ipoCount:0,cash:0},ach:{},bestParts:0,bestCombo:0,month:defMonth(),bestDay:0,endingSeen:false,history:[],tipsSeen:{},familyLevel:0,familyPaid:0,lastFamilyPay:0}}
 if(Q.has('reset')){try{localStorage.removeItem(SAVE_KEY)}catch(e){}}
 function loadSave(){try{const o=JSON.parse(localStorage.getItem(SAVE_KEY)||'null');if(o&&o.v===1){const d=defSave();
  return Object.assign(d,o,{up:Object.assign(d.up,o.up||{}),opt:Object.assign(d.opt,o.opt||{},{packs:Object.assign(d.opt.packs,(o.opt&&o.opt.packs)||{})}),ach:Object.assign({},d.ach,o.ach||{}),tipsSeen:Object.assign({},d.tipsSeen,o.tipsSeen||{}),month:Object.assign(defMonth(),o.month||{})})}}catch(e){}return defSave()}
@@ -465,6 +489,18 @@ const RANKS=[
  {n:'老板',need:2000,base:250,unit:4.2},
 ];
 function rankFor(screws){let r=0;for(let i=0;i<RANKS.length;i++)if(screws>=RANKS[i].need)r=i;return r}
+
+/* ---------- 养家糊口 ---------- */
+const FAMILY_LV=[
+ {id:0,n:'仅够糊口',mul:1,tag:'刚够米面油盐',blurb:'妈：又寄钱了？你自己多吃点'},
+ {id:1,n:'给爸妈买点好的',mul:1.5,tag:'生活费 +50%',blurb:'爸：烟酒别买贵的，你留着'},
+ {id:2,n:'给娃报兴趣班',mul:2,tag:'生活费 +100%',blurb:'娃：我想学吉他……和编程……和绘画'},
+ {id:3,n:'全家小康',mul:2.5,tag:'生活费 +150%',blurb:'全家：小康了！你什么时候回家？'},
+];
+function familyLv(){return clamp(S.familyLevel|0,0,3)}
+function baseLivingCost(){return Math.min(480,80+S.rank*35+Math.floor(S.day/5)*15)}
+function familyCost(lv){const L=FAMILY_LV[lv==null?familyLv():clamp(lv,0,3)];return Math.round(baseLivingCost()*L.mul*100)/100}
+function familyCostParts(lv){const L=FAMILY_LV[lv==null?familyLv():clamp(lv,0,3)];const base=baseLivingCost();const total=Math.round(base*L.mul*100)/100;return{base,extra:Math.round((total-base)*100)/100,total,L}}
 
 /* ---------- 小卖部 ---------- */
 const SHOP=[
@@ -495,7 +531,7 @@ function optPaperWorth(shares){const V=pick(OPT_VALS);const paper=Math.round(V.v
 
 
 /* ---------- 文案 ---------- */
-const PIE=['好好干，明年给你配股！','公司就是你的家！（房租另算）','年轻人要多吃苦，苦着苦着就甜了','等公司上市，大家都财务自由！','我当年比你们拼多了','格局要打开！螺丝要拧紧！','今年效益不好，明年一定涨','你们不是在打螺丝，是在打造未来！','加油，下个月给你升职（画饼中）','不要只盯着工资，要看成长！'];
+const PIE=['好好干，明年给你配股！','公司就是你的家！（房租另算）','年轻人要多吃苦，苦着苦着就甜了','等公司上市，大家都财务自由！','我当年比你们拼多了','格局要打开！螺丝要拧紧！','今年效益不好，明年一定涨','你们不是在打螺丝，是在打造未来！','加油，下个月给你升职（画饼中）','不要只盯着工资，要看成长！','家里催寄钱？好好干，钱就有了！'];
 const PRAISE=['嗯！这螺丝拧得有前途！','不错不错，年底考虑给你……口头表扬','这手法，像年轻时的我','好！继续保持，工资先别急'];
 const ANGRY=['上班时间玩手机？扣钱！','被我抓到了吧！','我看你是闲的！','摸鱼摸到我眼皮底下了？'];
 const CHATS=[
@@ -507,6 +543,8 @@ const CHATS=[
  ['工友老王','谁有充电宝？我手机就剩 3% 了'],
  ['HR小美','公司新规：微笑打螺丝，提升幸福感'],
  ['工友小李','听说隔壁厂涨工资了……算了当我没说'],
+ ['家里群','妈：这个月生活费记得寄，油盐又涨了'],
+ ['工友老王','又到发薪日了，先给家里打一笔……'],
 ];
 const VIDEOS=['猫咪也在打螺丝.mp4','震惊！螺丝竟然有 8 种拧法','下班倒计时 · 第 3 集','如何优雅地摸鱼（老板勿看）','挑战一口气拧 100 颗螺丝','螺丝的一生（纪录片）'];
 const MEETING=['老板早会：“今天大家要有狼性！”','老板早会：“我们是一家人，一家人不谈钱。”','老板早会：“效率！效率！还是效率！”','老板早会：“谁今天不滑丝，明年给他配股。”','老板早会：“我宣布，今天也是充满希望的一天。”'];
@@ -1151,12 +1189,15 @@ const ACHIEVEMENTS=[
  {id:'fullmonth',n:'全勤打工人',d:'一个月（5 天）零迟到拿全勤',bonus:25,icon:'📅'},
  {id:'gold3',n:'捡漏之王',d:'一天搞定 3 个金色零件',bonus:18,icon:'✨'},
  {id:'firstweek',n:'入职一周',d:'累计打满 5 个班',bonus:8,icon:'🪪'},
+ {id:'family1',n:'按时寄钱',d:'第一次在发薪日扣下家里生活费',bonus:10,icon:'🏠'},
+ {id:'filial',n:'孝子',d:'寄钱档位 ≥「给娃报兴趣班」并撑过一次发薪',bonus:20,icon:'🫶'},
+ {id:'provider',n:'养家糊口',d:'累计寄回家 ≥ ¥2000',bonus:30,icon:'🍚'},
 ];
 function achUnlocked(id){return !!(S.ach&&S.ach[id])}
 function unlockAch(id,extra){if(achUnlocked(id))return null;const a=ACHIEVEMENTS.find(x=>x.id===id);if(!a)return null;
  S.ach=S.ach||{};S.ach[id]={at:S.day,t:Date.now(),...(extra||{})};S.money+=a.bonus;save();SFX.ach();
  toast(`${a.icon} 成就「${a.n}」+¥${a.bonus}`);return a}
-function evaluateAchievements(st,payday,month){const got=[];
+function evaluateAchievements(st,payday,month,famPaid){const got=[];
  if(st.stripped===0&&st.screws>=8){const a=unlockAch('noslip');if(a)got.push(a)}
  if(st.maxCombo>=50){const a=unlockAch('combo50');if(a)got.push(a)}
  if(st.pieces>=20){const a=unlockAch('parts20');if(a)got.push(a)}
@@ -1165,6 +1206,9 @@ function evaluateAchievements(st,payday,month){const got=[];
  if(st.gold>=3){const a=unlockAch('gold3');if(a)got.push(a)}
  if(S.day>=5){const a=unlockAch('firstweek');if(a)got.push(a)}
  if(payday&&month&&month.late===0){const a=unlockAch('fullmonth');if(a)got.push(a)}
+ if(payday&&famPaid>0){const a=unlockAch('family1');if(a)got.push(a)}
+ if(payday&&famPaid>0&&familyLv()>=2){const a=unlockAch('filial');if(a)got.push(a)}
+ if((S.familyPaid||0)>=2000){const a=unlockAch('provider');if(a)got.push(a)}
  return got}
 function openAchievements(){SFX.click();show('achScr');
  const n=ACHIEVEMENTS.filter(a=>achUnlocked(a.id)).length;
@@ -1200,7 +1244,7 @@ function doShareReport(){if(!curSlip)return;SFX.share();const url=shareCardPng(c
  const a=document.createElement('a');a.href=url;a.download=`一起打螺丝-战报-第${curSlip.day}天.png`;document.body.appendChild(a);a.click();a.remove();
  $('#slipImg').src=url;$('#imgModal h2').textContent='打工战报已生成';show('imgModal')}
 /* ---------- 界面切换 ---------- */
-const SCREENS=['start','clockin','pause','otModal','payslip','shopScr','imgModal','ending','signup','boardScr','ipo','achScr'];
+const SCREENS=['start','clockin','pause','otModal','payslip','shopScr','imgModal','ending','signup','boardScr','ipo','achScr','famScr'];
 function show(id){for(const s of SCREENS)$('#'+s).classList.toggle('hidden',s!==id&&!(id==='imgModal'&&s==='payslip')&&!(id==='boardScr'&&s===boardFrom))}
 function setGameUi(on){$('#hud').classList.toggle('hidden',!on);$('#controls').classList.toggle('hidden',!on);if(!on){$('#bossWarn').classList.add('hidden');$('#phone').classList.add('hidden');$('#chat').innerHTML=''}layout()}
 let toastT=0;function toast(t){const el=$('#toast');el.textContent=t;el.style.opacity=1;clearTimeout(toastT);toastT=setTimeout(()=>el.style.opacity=0,1600)}
@@ -1214,7 +1258,9 @@ function refreshHowto(){const el=$('#howto');if(!el)return;
  <li>批头要对上（十字/一字/六角）。漏拧扣钱。</li>
  <li>可<b>摸鱼</b>回精力，但老板巡视时别被抓。每 5 天发一次月薪。</li>`}}
 function goStart(){screen='start';G=null;setGameUi(false);show('start');
- refreshBadge();refreshHowto();$('#sRank').textContent=RANKS[S.rank].n;$('#sDay').textContent=S.day+1;$('#sMoney').textContent=fmt(S.money)}
+ refreshBadge();refreshHowto();$('#sRank').textContent=RANKS[S.rank].n;$('#sDay').textContent=S.day+1;$('#sMoney').textContent=fmt(S.money);
+ const famEl=$('#sFam');if(famEl){const paid=S.familyPaid||0;const last=S.lastFamilyPay||0;
+  famEl.textContent=paid?`累计养家 ¥${fmt(paid)}${last?` · 上月寄出 ¥${fmt(last)}`:''}`:'养家：发薪日自动寄回家'}}
 
 /* ---------- 打卡 ---------- */
 let ciTimer=0,ciMin=0;
@@ -1279,13 +1325,15 @@ function buildSlip(st,payday,month,day,rankIdx,promo,monthTotal){const R=RANKS[r
  if(st.caught)D('摸鱼被抓',`${st.caught} 次 × ¥30 · 人赃并获`,st.caught*30);
  if(st.late)D('迟到扣款','考勤机说你迟到了',20);
  D('食堂饭卡','午餐：土豆炖土豆',12);
- if(payday){D('社保代扣','按最低基数 · 懂的都懂',Math.round(month.base*.105*100)/100);D('团建费','周六爬山 20 公里 · 自愿必须参加',30);D('工服清洗费','衣服其实是你自己洗的',8)}
+ if(payday){D('社保代扣','按最低基数 · 懂的都懂',Math.round(month.base*.105*100)/100);D('团建费','周六爬山 20 公里 · 自愿必须参加',30);D('工服清洗费','衣服其实是你自己洗的',8);
+  const fc=familyCostParts();D('家里生活费','刚够米面油盐 · 强制寄出',fc.base);
+  if(fc.extra>0)D('孝敬父母加码',`${fc.L.n} · ${fc.L.tag}`,fc.extra)}
  D('福报','996 福报 · 不另收费',0);
  const net=inc.reduce((a,b)=>a+b.a,0)-ded.reduce((a,b)=>a+b.a,0);
  const T=evalTitle(st);let boss=T.b;if(st.otRefused)boss+=' 另外，昨晚群里@你怎么不回？';if(st.caught&&T.k!=='fish')boss+=' 还有，上班别玩手机。';
- const m=Math.ceil(day/5);
+ const m=Math.ceil(day/5);const famCost=payday?familyCostParts().total:0;
  return{title:payday?`第 ${m} 月 · 月底工资条`:'日结工资条',payday,day,rank:R.n,meta:[['姓名',playerName()],['工号',PID],['职级',R.n],['日期',`第 ${day} 天${payday?'（发薪日！）':''}`]],
-  inc,ded,net,T,boss,promo,grade:g[0],monthTotal:payday?(monthTotal!=null?monthTotal:(month.earned||0)+net):null,opt:optInfo}}
+  inc,ded,net,T,boss,promo,grade:g[0],monthTotal:payday?(monthTotal!=null?monthTotal:(month.earned||0)+net):null,opt:optInfo,familyCost:famCost}}
 function stampSvg(){const id='sp'+Math.random().toString(36).slice(2,7);return`<svg class="stamp" viewBox="0 0 100 100"><defs><path id="${id}" d="M50 50 m-36 0 a36 36 0 1 1 72 0 a36 36 0 1 1 -72 0"/></defs>
  <circle cx="50" cy="50" r="46" fill="none" stroke="#e0283f" stroke-width="4"/><text font-size="10.5" font-weight="900" fill="#e0283f" letter-spacing="1"><textPath href="#${id}" startOffset="2%">拧不完螺丝制品有限公司 · 财务</textPath></text>
  <polygon points="50,34 54.7,45 66,45.5 57,52.5 60.5,64 50,57 39.5,64 43,52.5 34,45.5 45.3,45" fill="#e0283f"/><text x="50" y="80" font-size="10" font-weight="900" fill="#e0283f" text-anchor="middle">财务专用章</text></svg>`}
@@ -1304,25 +1352,28 @@ function slipHtml(s){const row=(r,neg)=>`<div class="row"><span class="l">${r.l}
  <div class="titlebadge">${medalSvg(s.T.k)}<div><small>今日称号</small><b>${s.T.n}</b><small>${s.T.d}</small></div></div>
  <div class="boss">老板批注：“${s.boss}”</div>
  ${s.promo?`<div class="promo">🎉 晋升通知：恭喜升为「${s.promo}」！基本工资 & 单价上涨</div>`:''}
- <div class="wallet">余额 ¥${fmt(S.money)} · 累计拧好 ${S.totalScrews} 颗 · ${s.payday?'下个发薪日：5 天后':`距月底发薪还有 ${5-(s.day%5)} 天`}</div><div class="wallet" style="opacity:.7">—— 一起打螺丝 ——</div></div>`}
+ <div class="wallet">余额 ¥${fmt(S.money)} · 累计拧好 ${S.totalScrews} 颗 · ${s.payday?'下个发薪日：5 天后':`距月底发薪还有 ${5-(s.day%5)} 天`}</div>
+ ${s.payday&&s.familyCost?`<div class="wallet" style="color:#8a4b00">本月寄回家 ¥${fmt(s.familyCost)} · 累计养家 ¥${fmt(S.familyPaid||0)}</div>`:''}
+ <div class="wallet" style="opacity:.7">—— 一起打螺丝 ——</div></div>`}
 let curSlip=null;
 function finishShift(){const st=G.stats;S.day++;const day=S.day,payday=day%5===0;const M=S.month;
  M.days++;if(st.late)M.late++;M.screws+=st.screws+st.stripped;M.perfect+=st.perfect;M.caught+=st.caught;M.stripped+=st.stripped;M.missed+=st.missed;if(st.ot)M.ot++;M.parts+=st.pieces;M.base+=G.R.base;M.fish+=st.fishTime;
  const good=st.perfect+st.ok;S.totalScrews+=good;S.totalPerfect+=st.perfect;S.totalParts+=st.pieces;
  S.bestParts=Math.max(S.bestParts||0,st.pieces);S.bestCombo=Math.max(S.bestCombo||0,st.maxCombo);
  const oldRank=S.rank;const nr=rankFor(S.totalScrews);let promo=null;if(nr>oldRank){S.rank=nr;promo=RANKS[nr].n}
- const achGot=evaluateAchievements(st,payday,M);
  const slip=buildSlip(st,payday,M,day,oldRank,promo);slip._stats={pieces:st.pieces,perfect:st.perfect,stripped:st.stripped,maxCombo:st.maxCombo,caught:st.caught};
+ let famPaid=0;if(payday){famPaid=slip.familyCost||0;S.familyPaid=(S.familyPaid||0)+famPaid;S.lastFamilyPay=famPaid;M.family=(M.family||0)+famPaid}
+ const achGot=evaluateAchievements(st,payday,M,famPaid);
  S.money+=slip.net;if(payday)slip.monthTotal=M.earned+slip.net;S.totalEarned+=slip.net;S.bestDay=Math.max(S.bestDay,slip.net);M.earned+=slip.net;
  S.history.push({d:day,net:Math.round(slip.net*100)/100,t:slip.T.n});if(S.history.length>40)S.history.shift();
  if(payday)S.month=defMonth();save();showSlip(slip);if(payday&&!DEMO)handleMonthSubmit(slip.monthTotal,$('#slipBoard'));
  if(!DEMO){submitStatBoard('parts',st.pieces);submitStatBoard('combo',st.maxCombo)}
- if(payday){if(shouldTriggerIpo())pendingIpo=true}
+ if(payday){if(shouldTriggerIpo())pendingIpo=true;if(S.money<familyCost())setTimeout(()=>toast('家里等米下锅……下月记得多拧点'),1600)}
  if(promo)setTimeout(()=>SFX.fanfare(),600);
  if(achGot&&achGot.length)setTimeout(()=>toast(`${achGot.map(a=>a.icon).join('')} 新成就 ×${achGot.length}`),1400)}
 function showSlip(slip){curSlip=slip;screen='payslip';setGameUi(false);$('#slipBox').innerHTML=slipHtml(slip);show('payslip');$('#payslip').scrollTop=0;SFX.register()}
 $('#btnNext').onclick=()=>{SFX.click();if(pendingIpo){pendingIpo=false;showIpo();return}if(S.rank===RANKS.length-1&&!S.endingSeen){showEnding();return}goClockIn()};
-$('#btnShop2').onclick=()=>openShop('payslip');$('#btnHome').onclick=()=>{SFX.click();goStart()};
+$('#btnShop2').onclick=()=>openShop('payslip');$('#btnFam2').onclick=()=>openFamily('payslip');$('#btnHome').onclick=()=>{SFX.click();goStart()};
 $('#btnSaveSlip').onclick=()=>{if(!curSlip)return;SFX.click();const url=slipPng(curSlip);const a=document.createElement('a');a.href=url;a.download=`一起打螺丝-工资条-第${curSlip.day}天.png`;document.body.appendChild(a);a.click();a.remove();
  $('#imgModal h2').textContent='工资条已生成';$('#slipImg').src=url;show('imgModal')};
 $('#btnShare').onclick=()=>doShareReport();
@@ -1364,6 +1415,20 @@ function slipPng(s){const Wd=750,pad=48,lh=64;const rows=s.inc.length+s.ded.leng
  x.beginPath();for(let i=0;i<10;i++){const r=i%2?11:28,a=-Math.PI/2+i*Math.PI/5;x.lineTo(Math.cos(a)*r,Math.sin(a)*r-6)}x.closePath();x.fill();x.font=F(900,18);x.textAlign='center';x.fillText('财务专用章',0,48);x.restore();
  return c.toDataURL('image/png')}
 
+
+/* ---------- 养家糊口 ---------- */
+let famFrom='start';
+function openFamily(from){famFrom=from||'start';SFX.click();renderFamily();show('famScr')}
+function renderFamily(){const lv=familyLv(),fc=familyCostParts(lv),next=familyCost(),paid=S.familyPaid||0;
+ $('#famPaid').textContent=fmt(paid);$('#famBal').textContent=fmt(S.money);
+ $('#famBlurb').textContent=FAMILY_LV[lv].blurb;
+ $('#famNext').textContent=`下个发薪日预计寄出 ¥${fmt(next)}（基准 ¥${fmt(fc.base)} · 当前「${FAMILY_LV[lv].n}」）`;
+ $('#famList').innerHTML=FAMILY_LV.map(L=>{const on=L.id===lv;const est=familyCost(L.id);
+  return`<div class="item${on?' onfam':''}"><div class="ic famic">${['🍚','🧧','🎒','🏡'][L.id]}</div><div class="tx"><b>${L.n}</b><span class="lv">${L.tag}</span><p>发薪日约 ¥${fmt(est)} · ${L.blurb}</p></div>
+  <button class="btn ${on?'green':'gray'}" data-fam="${L.id}">${on?'当前':'选这个'}</button></div>`}).join('');
+ document.querySelectorAll('[data-fam]').forEach(b=>b.onclick=()=>setFamilyLevel(+b.dataset.fam))}
+function setFamilyLevel(lv){lv=clamp(lv|0,0,3);if(lv===familyLv()){toast('本来就是这个档');return}
+ S.familyLevel=lv;save();SFX.click();toast(`已改为「${FAMILY_LV[lv].n}」· 下次发薪生效`);renderFamily()}
 /* ---------- 小卖部 ---------- */
 function shopIcon(id){const m={drill:`<svg viewBox="0 0 40 40"><rect x="4" y="10" width="22" height="12" rx="5" fill="#ff9f1c" stroke="#7a3d00" stroke-width="2"/><rect x="12" y="20" width="8" height="15" rx="3" fill="#2b2d42"/><rect x="26" y="14" width="9" height="4" fill="#9aa3b5"/><path d="M8 13h6" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".7"/></svg>`,
  magnet:`<svg viewBox="0 0 40 40"><path d="M8 6h8v16a4 4 0 0 0 8 0V6h8v16a12 12 0 0 1-24 0z" fill="#ef476f" stroke="#7a1030" stroke-width="2"/><rect x="8" y="6" width="8" height="6" fill="#dfe3ec"/><rect x="24" y="6" width="8" height="6" fill="#dfe3ec"/></svg>`,
@@ -1395,7 +1460,7 @@ function buy(id){const it=SHOP.find(i=>i.id===id);let price;if(it.tea)price=it.p
 function buyOpt(id){const pk=OPT_PACKS.find(p=>p.id===id);if(!pk)return;if(!optUnlocked()){SFX.wrong();toast('还没到线长，老板不给配股');return}
  if(S.opt.packs[id]){toast('这份已经认购过啦');return}if(S.money<pk.price){SFX.wrong();toast('现金不够买饼……先拧几天');return}
  S.money-=pk.price;S.opt.packs[id]=1;S.opt.shares=Math.round((S.opt.shares+pk.shares)*1000)/1000;save();SFX.fanfare();toast(`恭喜获配 ${pk.tag}！纸面已加钱`);renderShop()}
-$('#btnShop1').onclick=()=>openShop('start');$('#btnAch1').onclick=()=>openAchievements();$('#achClose').onclick=()=>{SFX.click();goStart()};$('#shopClose').onclick=()=>{SFX.click();if(shopFrom==='payslip')show('payslip');else goStart()};
+$('#btnShop1').onclick=()=>openShop('start');$('#btnFam1').onclick=()=>openFamily('start');$('#btnAch1').onclick=()=>openAchievements();$('#achClose').onclick=()=>{SFX.click();goStart()};$('#famClose').onclick=()=>{SFX.click();if(famFrom==='payslip')show('payslip');else goStart()};$('#shopClose').onclick=()=>{SFX.click();if(shopFrom==='payslip')show('payslip');else goStart()};
 $('#shopGo').onclick=()=>{SFX.click();if(S.rank===RANKS.length-1&&!S.endingSeen&&shopFrom==='payslip'){showEnding();return}goClockIn()};
 
 
@@ -1508,6 +1573,8 @@ function boot(){layout();refreshMute();goStart();requestAnimationFrame(loop);
  else if(DEMO==='ending'){showEnding()}
  else if(DEMO==='clockin'){goClockIn()}
  else if(DEMO==='achievements'||DEMO==='ach'){S.ach={noslip:{at:1},combo50:{at:2},parts20:{at:3},perfect80:{at:3},stealth:{at:4},fullmonth:{at:5},gold3:{at:2},firstweek:{at:5}};openAchievements()}
+ else if(DEMO==='family'||DEMO==='fam'){S.money=Math.max(S.money,888);S.familyPaid=Math.max(S.familyPaid||0,1260);S.familyLevel=Math.max(S.familyLevel||0,1);S.rank=Math.max(S.rank,2);S.day=Math.max(S.day,20);openFamily('start')}
+ else if(DEMO==='familypay'||DEMO==='fampay'){S.familyLevel=2;S.familyPaid=Math.max(S.familyPaid||0,800);S.rank=Math.max(S.rank,2);S.day=Math.max(S.day,19);const M=Object.assign(defMonth(),{days:5,late:0,screws:420,perfect:351,base:550});const st=fakeStats();const slip=buildSlip(st,true,M,20,2,null);S.familyPaid=(S.familyPaid||0)+(slip.familyCost||0);S.money=Math.max(S.money,1288)+slip.net;showSlip(slip)}
  else if(DEMO==='share'){const st=fakeStats();const slip=buildSlip(st,false,defMonth(),3,1,null);slip._stats=st;curSlip=slip;showSlip(slip);setTimeout(doShareReport,400)}
 }
 boot();
